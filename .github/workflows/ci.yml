@@ -19,10 +19,8 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Unit tests
-        run: ./gradlew :focus:testDebugUnitTest :dock:testDebugUnitTest --console=plain
-      - name: Build debug APK
-        run: ./gradlew :app:assembleDebug --console=plain
+      - name: Unit tests and debug APK
+        run: ./gradlew :focus:testDebugUnitTest :dock:testDebugUnitTest :app:assembleDebug --continue --console=plain
       - uses: actions/upload-artifact@v4
         with:
           name: glint-debug-apk
