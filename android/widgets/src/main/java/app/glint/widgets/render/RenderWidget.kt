@@ -210,7 +210,7 @@ private fun DateWidget(d: WidgetData, ink: WidgetInk) {
             Txt(t.dayOfWeek.getDisplayName(JTextStyle.FULL, Locale.getDefault()), 13f, ink.dim)
         }
         else -> Row(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) { // date_big
-            Txt(t.dayOfMonth.toString(), (LocalSize.current.height.value * .5f).coerceIn(32f, 88f), ink.fg, FontWeight.Light)
+            Txt(t.dayOfMonth.toString(), (LocalSize.current.height.value * .5f).coerceIn(32f, 88f), ink.fg, FontWeight.Normal)
             Spacer(GlanceModifier.width(12.dp))
             Column {
                 Txt(t.dayOfWeek.getDisplayName(JTextStyle.FULL, Locale.getDefault()).uppercase(), 13f, ink.accent, FontWeight.Bold)
@@ -312,7 +312,7 @@ private fun WeatherWidget(d: WidgetData, ink: WidgetInk) {
     when (d.design.id) {
         "weather_big" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Bottom) {
             Label(w.city, ink.dim)
-            Txt("${w.tempC}°", (h * .5f).coerceIn(36f, 96f), ink.fg, FontWeight.Light)
+            Txt("${w.tempC}°", (h * .5f).coerceIn(36f, 96f), ink.fg, FontWeight.Normal)
         }
         "weather_range" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             Label(w.city, ink.dim)
