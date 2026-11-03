@@ -14,12 +14,13 @@ open() { adb shell am start -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
 open $PKG/.MainActivity "" settings
 adb shell input tap 540 1300 || true; sleep 3; shot settings_tap
 open $PKG/app.glint.launcher.LauncherActivity "" home_bento
-adb shell input swipe 540 1900 540 400 300; sleep 3; shot drawer
+adb shell input swipe 540 1500 540 300 400; sleep 3; shot drawer
+adb shell input keyevent KEYCODE_BACK; sleep 1
 adb shell input keyevent KEYCODE_HOME; sleep 2
 adb shell settings put system accelerometer_rotation 1
 open $PKG/app.glint.dock.DockActivity "" dock
-adb shell input swipe 1800 500 300 500 200; sleep 3; shot dock_page2
-adb shell input swipe 1800 500 300 500 200; sleep 3; shot dock_page3
+adb shell input tap 1200 540; sleep 3; shot dock_page2
+adb shell input tap 1200 540; sleep 3; shot dock_page3
 adb shell input keyevent KEYCODE_BACK; sleep 2
 
 echo "==== crashes ===="

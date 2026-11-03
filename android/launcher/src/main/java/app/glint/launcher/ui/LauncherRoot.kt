@@ -49,7 +49,14 @@ fun LauncherRoot(
         StyleBackground(home.style, muted = session != null) {
             Box(
                 Modifier.fillMaxSize().pointerInput(session == null) {
-                    if (session == null) detectVerticalDragGestures { _, drag -> if (drag < -40) vm.openDrawer(true) }
+                    if (session == null) {
+                        // Swipe up anywhere on home opens all apps.
+                        var total = 0f
+                        detectVerticalDragGestures(
+                            onDragStart = { total = 0f },
+                            onDragEnd = { if (total < -120f) vm.openDrawer(true) },
+                        ) { _, drag -> total += drag }
+                    }
                 },
             ) {
                 if (session != null) {

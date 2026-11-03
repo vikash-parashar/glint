@@ -6,6 +6,8 @@ import android.text.format.DateFormat
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -42,6 +44,7 @@ import app.glint.data.batteryFlow
 import app.glint.theme.GlintStyles
 import app.glint.theme.StyleRepository
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.isActive
 import java.time.Instant
 import java.time.LocalDate
@@ -126,7 +129,12 @@ fun DockScreen(state: DockState, settings: DockSettings, onTap: () -> Unit = {})
                 StatusBar(state, ink, Modifier.padding(top = 24.dp))
             }
         } else {
-        HorizontalPager(pager, Modifier.fillMaxSize().offset { shift }) { page ->
+        val scope = rememberCoroutineScope()
+        // Swipe between pages, or tap to go to the next one.
+        HorizontalPager(pager, Modifier.fillMaxSize().offset { shift }
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
+                scope.launch { pager.animateScrollToPage((pager.currentPage + 1) % DockFace.entries.size) }
+            }) { page ->
             Box(Modifier.fillMaxSize().padding(horizontal = 40.dp, vertical = 24.dp)) {
                 when (DockFace.entries[page]) {
                     DockFace.Split -> SplitPage(state, ink, night)
