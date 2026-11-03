@@ -6,6 +6,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   android:
     runs-on: ubuntu-latest
@@ -21,10 +24,51 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Unit tests and debug APK
         run: chmod +x gradlew && ./gradlew :focus:testDebugUnitTest :dock:testDebugUnitTest :app:assembleDebug --continue --console=plain
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk ../glint.apk
       - uses: actions/upload-artifact@v4
         with:
           name: glint-debug-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          path: glint.apk
+
+  # Installs the APK on a real Android emulator, opens every screen and fails on any crash.
+  smoke:
+    needs: android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: glint-debug-apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Run on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          script: bash scripts/smoke.sh
+
+  release:
+    needs: smoke
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: glint-debug-apk
+      - name: Publish APK to the "latest" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest -R ${{ github.repository }} -y --cleanup-tag || true
+          gh release create latest glint.apk -R ${{ github.repository }} --target ${{ github.sha }} \
+            --title "Glint (latest build)" --notes "Debug build from ${{ github.sha }}. Download glint.apk on your phone and install."
 
   backend:
     runs-on: ubuntu-latest
