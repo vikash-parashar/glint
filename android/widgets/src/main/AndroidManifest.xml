@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Permissions live in core-data and are only requested on a widget's setup screen. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <receiver android:name="app.glint.widgets.engine.ClockDigitalReceiver" android:exported="true" android:label="@string/w_clock_digital">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_clock_digital_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.ClockAnalogReceiver" android:exported="true" android:label="@string/w_clock_analog">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_clock_analog_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.WorldClockReceiver" android:exported="true" android:label="@string/w_world_clock">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_world_clock_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.DateReceiver" android:exported="true" android:label="@string/w_date">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_date_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.AgendaReceiver" android:exported="true" android:label="@string/w_agenda">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_agenda_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.WeatherReceiver" android:exported="true" android:label="@string/w_weather">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_weather_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.BatteryReceiver" android:exported="true" android:label="@string/w_battery">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_battery_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.StepsReceiver" android:exported="true" android:label="@string/w_steps">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_steps_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.MusicReceiver" android:exported="true" android:label="@string/w_music">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_music_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.NoteReceiver" android:exported="true" android:label="@string/w_note">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_note_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.ChecklistReceiver" android:exported="true" android:label="@string/w_checklist">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_checklist_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.QuoteReceiver" android:exported="true" android:label="@string/w_quote">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_quote_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.CountdownReceiver" android:exported="true" android:label="@string/w_countdown">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_countdown_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.AppsReceiver" android:exported="true" android:label="@string/w_apps">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_apps_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.SearchReceiver" android:exported="true" android:label="@string/w_search">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_search_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.PhotoReceiver" android:exported="true" android:label="@string/w_photo">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_photo_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.FocusReceiver" android:exported="true" android:label="@string/w_focus">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_focus_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.AlarmReceiver" android:exported="true" android:label="@string/w_alarm">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_alarm_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.SkyReceiver" android:exported="true" android:label="@string/w_sky">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/w_sky_info" />
+        </receiver>
+        <receiver android:name="app.glint.widgets.engine.PinResultReceiver" android:exported="false" />
+
+        <activity android:name="app.glint.widgets.config.WidgetConfigActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity="app.glint.widgetconfig"
+            android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+        </activity>
+        <activity android:name="app.glint.widgets.config.NoteEditorActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity="app.glint.noteeditor"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+    </application>
+</manifest>

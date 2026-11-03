@@ -1,0 +1,241 @@
+<title>Glint Dock and Wallpapers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700&family=Manrope:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column of three bands (Dock, Wallpapers, Widgets), each a dark stage holding the real thing at device proportions. */
+:root{
+  --bg:#0c0d10; --panel:#15161b; --line:#25262d; --fg:#f2efe9; --dim:#9a98a1;
+  --peach:#ffb59e; --sky:#a9c8ff; --mint:#b5e8c8; --night:#b3261e;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Manrope", "Segoe UI", system-ui, sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px;display:grid;gap:56px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,56px);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h2{font-family:var(--display);font-weight:500;font-size:28px;margin:0;text-wrap:balance}
+.lede{color:var(--dim);max-width:62ch;margin:10px 0 0}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--peach);font-weight:700}
+section{display:grid;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button.tab{font:600 13px var(--body);color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+button.tab[aria-pressed="true"]{color:#1a1110;background:var(--peach);border-color:var(--peach)}
+button.tab:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+
+/* Dock */
+.phone{position:relative;width:100%;max-width:880px;aspect-ratio:19.5/9;background:#000;border-radius:clamp(18px,4vw,44px);border:clamp(5px,1vw,10px) solid #1c1d22;box-shadow:0 30px 80px -30px #000;overflow:hidden;container-type:inline-size}
+.screen{position:absolute;inset:0;padding:4.5cqw 5cqw 6cqw;display:flex;gap:3cqw;color:var(--fg);transition:color .4s}
+.phone.night .screen{color:var(--night)}
+.clockcol{flex:1.15;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.date{font-size:2.3cqw;color:var(--peach);font-weight:600}
+.phone.night .date,.phone.night .accent{color:var(--night)}
+.time{font-family:var(--display);font-weight:300;font-size:13cqw;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.alarm{font-size:2.1cqw;margin-top:.6cqw}
+.card{background:#16171b;border-radius:3cqw;padding:2.2cqw;min-width:0}
+.phone.night .card{background:#140504}
+.month{flex:1;display:flex;flex-direction:column;justify-content:center}
+.month .m{font-size:1.7cqw;font-weight:700;letter-spacing:.1em;color:var(--peach)}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:.4cqw;margin-top:.8cqw;text-align:center;font-size:1.6cqw;font-variant-numeric:tabular-nums}
+.grid7 .h{color:var(--dim)}
+.grid7 .d{position:relative;line-height:3cqw}
+.grid7 .today{background:var(--peach);color:#000;border-radius:50%;font-weight:700}
+.grid7 .busy::after{content:"";position:absolute;left:50%;bottom:-.2cqw;width:.5cqw;height:.5cqw;margin-left:-.25cqw;border-radius:50%;background:var(--peach)}
+.big{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.big .time{font-size:20cqw}
+.agenda{flex:1;display:grid;grid-template-columns:1fr 1.2fr;gap:2cqw}
+.agenda .stack{display:grid;gap:2cqw;grid-template-rows:1fr 1fr}
+.lab{font-size:1.5cqw;color:var(--dim)}
+.ev{display:flex;gap:1.2cqw;align-items:center;margin-top:1.2cqw;font-size:1.9cqw}
+.ev i{width:1cqw;height:1cqw;border-radius:50%;background:var(--peach);flex:none}
+.phone.night .ev i{background:var(--night)}
+.ev span{color:var(--dim);width:9cqw;flex:none;font-variant-numeric:tabular-nums}
+.status{position:absolute;left:5cqw;bottom:2cqw;font-size:1.5cqw;color:var(--dim)}
+.dots{position:absolute;left:50%;bottom:2.2cqw;transform:translateX(-50%);display:flex;gap:.8cqw}
+.dots b{width:.8cqw;height:.8cqw;border-radius:50%;background:var(--dim)}
+.dots b.on{background:var(--fg)}
+.phone.night .dots b.on{background:var(--night)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.fact{border-top:1px solid var(--line);padding-top:10px}
+.fact strong{display:block;font-size:14px}
+.fact p{margin:2px 0 0;color:var(--dim);font-size:13.5px}
+
+/* Wallpapers */
+.walls{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+.walls figure{margin:0;display:grid;gap:6px}
+.walls canvas{width:100%;max-width:100%;aspect-ratio:9/19.5;border-radius:14px;display:block;background:var(--panel)}
+.walls figcaption{font-size:12px;color:var(--dim)}
+
+/* Widgets */
+.kinds{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.kind{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;min-width:0}
+.kind h3{margin:0 0 6px;font-size:14px;display:flex;justify-content:space-between}
+.kind h3 span{color:var(--dim);font-weight:400;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:12px;padding:2px 8px;border-radius:999px;background:#1f2026;color:var(--fg)}
+.chip.pro{background:transparent;border:1px solid var(--peach);color:var(--peach)}
+.chip.new{background:var(--mint);color:#10241a}
+@media (prefers-reduced-motion:reduce){.screen{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Glint · build 0.2</div>
+    <h1>Bedside Dock, 24 wallpapers, 51 widgets</h1>
+    <p class="lede">This is how the new parts look on the phone. Dock below is live: the clock runs, and you can switch pages and night mode like you would by swiping.</p>
+  </header>
+
+  <section aria-labelledby="dock-h">
+    <h2 id="dock-h">Dock mode</h2>
+    <div class="row" role="group" aria-label="Dock page">
+      <button class="tab" id="p-split" aria-pressed="true">Clock + calendar</button>
+      <button class="tab" id="p-big" aria-pressed="false">Big clock</button>
+      <button class="tab" id="p-agenda" aria-pressed="false">Agenda</button>
+      <button class="tab" id="p-night" aria-pressed="false">Night mode</button>
+    </div>
+    <div class="phone" id="phone"><div class="screen" id="screen"></div><div class="status" id="status"></div><div class="dots" id="dots"></div></div>
+    <div class="facts">
+      <div class="fact"><strong>Starts by itself</strong><p>Charging, auto-rotate on, phone set on its side for 2 seconds. Picked up or unplugged, it closes.</p></div>
+      <div class="fact"><strong>Alarms only</strong><p>Do Not Disturb switches to alarms only while docked, and your old setting comes back after.</p></div>
+      <div class="fact"><strong>On the lock screen</strong><p>Pick Glint Dock as the screen saver once. Android then shows it whenever the phone charges.</p></div>
+      <div class="fact"><strong>Kind to the screen</strong><p>Dim red at night, and the whole layout shifts a few pixels each minute so nothing burns in.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="wall-h">
+    <h2 id="wall-h">Wallpapers</h2>
+    <p class="lede" style="margin:0">Eight palettes in three patterns. The phone draws each one at its exact screen size, so they're always sharp and add nothing to the download.</p>
+    <div class="walls" id="walls"></div>
+  </section>
+
+  <section aria-labelledby="w-h">
+    <h2 id="w-h">Widgets</h2>
+    <p class="lede" style="margin:0">51 designs across 19 types. Green ones are the music, steps and notes widgets you asked for. Outlined ones are Pro.</p>
+    <div class="kinds" id="kinds"></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const phone = $("phone"), screen = $("screen");
+  let page = "split", night = false;
+
+  const pad = n => String(n).padStart(2, "0");
+  const fmtTime = d => `${d.getHours() % 12 || 12}:${pad(d.getMinutes())}`;
+  const alarmAt = (() => { const a = new Date(); a.setDate(a.getDate() + (a.getHours() >= 6 ? 1 : 0)); a.setHours(6, 30, 0, 0); return a; })();
+  const alarmLine = now => { const m = Math.max(0, Math.round((alarmAt - now) / 60000)); return `⏰ 6:30 AM · in ${Math.floor(m / 60)} h ${m % 60} min`; };
+  const events = [["11:30", "Design review"], ["14:00", "Gym with Arjun"], ["19:30", "Dinner at Riya's"], ["All day", "Mom's birthday"]];
+
+  function month(now) {
+    const y = now.getFullYear(), mo = now.getMonth(), first = new Date(y, mo, 1).getDay(), len = new Date(y, mo + 1, 0).getDate();
+    const busy = new Set([3, 7, 12, 18, 21, 26].filter(d => d !== now.getDate()));
+    let h = ["S","M","T","W","T","F","S"].map(x => `<div class="h">${x}</div>`).join("");
+    for (let i = 0; i < first; i++) h += "<div></div>";
+    for (let d = 1; d <= len; d++) h += `<div class="d${d === now.getDate() ? " today" : ""}${busy.has(d) ? " busy" : ""}">${d}</div>`;
+    return `<div class="card month"><div class="m">${now.toLocaleString("en", { month: "long" }).toUpperCase()}</div><div class="grid7">${h}</div></div>`;
+  }
+
+  function render() {
+    const now = new Date();
+    const date = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+    const ampm = `<span style="font-size:.2em;color:var(--dim);margin-left:.3em">${now.getHours() < 12 ? "AM" : "PM"}</span>`;
+    if (page === "split") {
+      screen.innerHTML = `<div class="clockcol"><div class="date">${date}</div><div class="time">${fmtTime(now)}${ampm}</div><div class="alarm">${alarmLine(now)}</div></div>` + (night ? "" : month(now));
+    } else if (page === "big") {
+      screen.innerHTML = `<div class="big"><div class="time">${fmtTime(now)}</div><div class="alarm">${alarmLine(now)}</div></div>`;
+    } else {
+      const ev = events.slice(0, night ? 2 : 4).map(([t, n]) => `<div class="ev"><i></i><span>${t}</span>${n}</div>`).join("");
+      screen.innerHTML = `<div class="agenda"><div class="stack"><div class="card"><div class="lab">Now</div><div class="time" style="font-size:7cqw">${fmtTime(now)}</div><div class="alarm">${alarmLine(now)}</div></div>` +
+        (night ? "" : `<div class="card"><div class="lab">Jaipur</div><div class="time" style="font-size:6cqw">☀ 24°</div><div class="lab">Clear · H 29° L 18°</div></div>`) +
+        `</div><div class="card"><div class="lab">Up next</div>${ev}</div></div>`;
+    }
+    $("status").textContent = "⚡ 86%   ·   Alarms only";
+    $("dots").innerHTML = ["split", "big", "agenda"].map(p => `<b class="${p === page ? "on" : ""}"></b>`).join("");
+    phone.classList.toggle("night", night);
+  }
+
+  const pages = { "p-split": "split", "p-big": "big", "p-agenda": "agenda" };
+  Object.keys(pages).forEach(id => $(id).addEventListener("click", () => {
+    page = pages[id];
+    Object.keys(pages).forEach(k => $(k).setAttribute("aria-pressed", String(k === id)));
+    render();
+  }));
+  $("p-night").addEventListener("click", e => { night = !night; e.currentTarget.setAttribute("aria-pressed", String(night)); render(); });
+  render();
+  setInterval(render, 1000);
+
+  // Wallpapers: same generator as Wallpapers.kt (8 palettes x Mesh, Dunes, Orbit).
+  const P = [
+    ["Ember", "#1A0F0C", "#FF8A5B", "#FFC76B", "#E0466B"], ["Lagoon", "#071A22", "#2FD3B4", "#3A8DFF", "#9BF2E1"],
+    ["Meadow", "#0E1A10", "#B5E8C8", "#5DBB63", "#F2DCA6"], ["Dusk", "#140F24", "#8E7CFF", "#FF9A6B", "#F3C9E0"],
+    ["Sand", "#F4EDE2", "#E9C9A0", "#D9A47A", "#F7E3C8"], ["Glacier", "#EEF3F8", "#A9C8FF", "#D2E4FF", "#7FA6E6"],
+    ["Bloom", "#FFF1F3", "#FFB5C8", "#D2BDFF", "#FFD8B0"], ["Night", "#050608", "#2F5BFF", "#6B3AFF", "#1E2A44"],
+  ];
+  const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+  const light = hex => { const n = parseInt(hex.slice(1), 16); return 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255) > 160; };
+  function rng(seed) { let s = seed >>> 0 || 1; return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296; }
+  function hash(str) { let h = 0; for (const c of str) h = (h * 31 + c.charCodeAt(0)) | 0; return h; }
+
+  function draw(cv, [name, base, c1, c2, c3], pattern) {
+    const w = cv.width, h = cv.height, g = cv.getContext("2d"), r = rng(hash(name + pattern));
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    if (pattern === "Mesh") {
+      [c1, c2, c3, c1].forEach((col, i) => {
+        const cx = w * (0.15 + r() * 0.7), cy = h * (0.1 + i * 0.24 + r() * 0.08), rad = Math.max(w, h) * (0.35 + r() * 0.2);
+        const gr = g.createRadialGradient(cx, cy, 0, cx, cy, rad); gr.addColorStop(0, rgba(col, 0.82)); gr.addColorStop(1, rgba(col, 0));
+        g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, rad, 0, 7); g.fill();
+      });
+    } else if (pattern === "Dunes") {
+      const sky = g.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, c3); sky.addColorStop(1, base); g.fillStyle = sky; g.fillRect(0, 0, w, h);
+      [c3, c1, c2, c1, base].forEach((col, i) => {
+        const top = h * (0.38 + i * 0.12), amp = h * (0.035 - i * 0.004);
+        g.beginPath(); g.moveTo(0, h);
+        for (let x = 0; x <= w; x += w / 60) g.lineTo(x, top + amp * Math.sin((x / w) * 2 * Math.PI * (1.1 + i * 0.35) + i * 1.7));
+        g.lineTo(w, h); g.closePath();
+        const sh = g.createLinearGradient(0, top - amp, 0, h); sh.addColorStop(0, rgba(col, 0.94)); sh.addColorStop(1, base);
+        g.fillStyle = sh; g.fill();
+      });
+    } else {
+      const cx = w * 0.82, cy = h * 0.22, R = w * 0.9;
+      const gl = g.createRadialGradient(cx, cy, 0, cx, cy, R);
+      gl.addColorStop(0, rgba(c1, 0.75)); gl.addColorStop(0.45, rgba(c2, 0.25)); gl.addColorStop(1, rgba(c2, 0));
+      g.fillStyle = gl; g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fill();
+      g.lineWidth = Math.max(1, w / 360);
+      let rad = w * 0.18, i = 0; const max = Math.hypot(w, h);
+      while (rad < max) { g.strokeStyle = rgba(i % 3 === 0 ? c3 : c1, Math.max(0x14, 0x70 - i * 4) / 255); g.beginPath(); g.arc(cx, cy, rad, 0, 7); g.stroke(); rad *= 1.22; i++; }
+      g.shadowColor = c3; g.shadowBlur = w / 30; g.fillStyle = c3; g.beginPath(); g.arc(cx - w * 0.36, cy + w * 0.44, w / 70, 0, 7); g.fill(); g.shadowBlur = 0;
+    }
+    g.fillStyle = light(base) ? "rgba(0,0,0,.04)" : "rgba(255,255,255,.05)";
+    for (let k = 0; k < (w * h) / 90; k++) g.fillRect(r() * w, r() * h, 1, 1);
+  }
+
+  const walls = $("walls");
+  P.forEach(p => ["Mesh", "Dunes", "Orbit"].forEach(pat => {
+    const f = document.createElement("figure"), cv = document.createElement("canvas");
+    cv.width = 216; cv.height = 468; cv.setAttribute("role", "img"); cv.setAttribute("aria-label", `${p[0]} ${pat} wallpaper`);
+    const cap = document.createElement("figcaption"); cap.textContent = `${p[0]} ${pat}`;
+    f.append(cv, cap); walls.append(f); draw(cv, p, pat);
+  }));
+
+  // Widget catalogue (mirrors WidgetCatalog.kt). * = Pro, + = new this round.
+  const K = [
+    ["Clock", "Big clock|Stacked|Mono|Serif*|Minimal|Greeting*|Pill"], ["Analog clock", "Classic|Numerals*|Dots|Minimal*"],
+    ["World clock", "Two cities|Three cities*"], ["Date", "Big date|Month|Week strip|Tear-off page*"],
+    ["Calendar", "Next event|Agenda*"], ["Weather", "Now|Big temperature|High and low|Pill|Three days*"],
+    ["Battery", "Percent|Ring|Bar|Pill"], ["Steps", "Steps+|Goal ring*+|Goal bar+"], ["Music", "Player+|Compact+|Controls*+"],
+    ["Note", "Sticky note+"], ["Checklist", "Checklist+"], ["Quote", "Quote|Bold quote*"],
+    ["Countdown", "Days until|Year progress|Day progress*"], ["Quick apps", "Four apps|Eight apps*"], ["Search", "Search"],
+    ["Photo", "Photo|Photo + date*"], ["Focus", "Focus|Focus streak"], ["Next alarm", "Next alarm"], ["Moon & device", "Moon phase*|Storage"],
+  ];
+  let total = 0;
+  $("kinds").innerHTML = K.map(([k, list]) => {
+    const items = list.split("|"); total += items.length;
+    const chips = items.map(n => {
+      const pro = n.includes("*"), nw = n.includes("+"), label = n.replace(/[*+]/g, "");
+      return `<span class="chip${nw ? " new" : pro ? " pro" : ""}">${label}${pro && nw ? " · Pro" : ""}</span>`;
+    }).join("");
+    return `<div class="kind"><h3>${k}<span>${items.length}</span></h3><div class="chips">${chips}</div></div>`;
+  }).join("");
+  $("w-h").textContent = `Widgets · ${total}`;
+})();
+</script>

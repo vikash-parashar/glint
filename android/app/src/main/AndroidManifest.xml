@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Privacy promise: nothing is asked at install. Calendar, physical activity and
+      notification access are asked only on the setup screen of the widget that needs them.
+      Glint never asks for location, contacts, storage, exact alarms or accessibility.
+    -->
+    <!-- Normal permission (no prompt): lets the wallpaper gallery set home and lock wallpapers. -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+
+    <application
+        android:name=".GlintApp"
+        android:label="@string/app_name"
+        android:icon="@android:drawable/sym_def_app_icon"
+        android:theme="@android:style/Theme.Material.NoActionBar"
+        android:supportsRtl="true">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Long-press on the home screen opens settings through this action. -->
+            <intent-filter>
+                <action android:name="app.glint.action.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/w_world_clock_desc"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:configure="app.glint.widgets.config.WidgetConfigActivity"
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:minWidth="171dp"
+    android:minHeight="50dp"
+    android:minResizeWidth="114dp"
+    android:minResizeHeight="50dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen|keyguard" />

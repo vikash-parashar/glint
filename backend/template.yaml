@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Glint API (Go on Lambda + API Gateway HTTP API)
+
+Parameters:
+  DatabaseUrlSecretArn: { Type: String }
+  LicenceKeySecretArn: { Type: String }
+
+Globals:
+  Function:
+    Runtime: provided.al2023
+    Architectures: [arm64]
+    MemorySize: 256
+    Timeout: 10
+
+Resources:
+  Api:
+    Type: AWS::Serverless::HttpApi
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata: { BuildMethod: go1.x }
+    Properties:
+      CodeUri: .
+      Handler: bootstrap
+      Environment:
+        Variables:
+          PLAY_PACKAGE_NAME: app.glint
+          # Resolved at deploy time; prefer the Parameters & Secrets Lambda extension in prod.
+          DATABASE_URL: !Sub "{{resolve:secretsmanager:${DatabaseUrlSecretArn}}}"
+          LICENCE_SIGNING_KEY: !Sub "{{resolve:secretsmanager:${LicenceKeySecretArn}}}"
+      Events:
+        All:
+          Type: HttpApi
+          Properties: { ApiId: !Ref Api, Path: /{proxy+}, Method: ANY }
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com"

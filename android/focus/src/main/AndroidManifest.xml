@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Normal (install-time, no prompt) permission. The user still grants DND access in
+         system settings; we only ask the first time they start a focus session. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+</manifest>

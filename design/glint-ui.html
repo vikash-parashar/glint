@@ -1,0 +1,488 @@
+<title>Glint UI Samples</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;600&display=swap">
+<style>
+/* Layout: a dark studio wall of phone frames, theme switcher on top; each frame captioned in Hindi. */
+:root {
+  color-scheme: dark;
+  --page: #0c0d10;
+  --page-2: #14161b;
+  --ink: #eceef2;
+  --ink-dim: #9097a3;
+  --line: #262a33;
+  --pro: #d9b46a;
+  --ok: #67d9a3;
+  --display: "Bricolage Grotesque", "Manrope", system-ui, sans-serif;
+  --body: "Manrope", "Noto Sans Devanagari", system-ui, sans-serif;
+  --hi: "Noto Sans Devanagari", "Manrope", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Glass theme tokens: swapped by the theme switcher (Smoke default) */
+  --g-tint: rgba(28, 28, 34, .48);
+  --g-stroke: rgba(255, 255, 255, .16);
+  --g-hl: rgba(255, 255, 255, .10);
+  --g-accent: #ffb547;
+  --g-on: #f4f4f4;
+  --g-sub: rgba(244, 244, 244, .62);
+  --wall-a: #3a2a1c;
+  --wall-b: #121318;
+  --wall-c: #5b3a1e;
+}
+body[data-glass="frost"] {
+  --g-tint: rgba(232, 240, 255, .16); --g-stroke: rgba(255,255,255,.34); --g-hl: rgba(255,255,255,.22);
+  --g-accent: #8fd0ff; --g-on: #ffffff; --g-sub: rgba(255,255,255,.72);
+  --wall-a: #2f5b8c; --wall-b: #0f1d33; --wall-c: #7aa6d6;
+}
+body[data-glass="aurora"] {
+  --g-tint: rgba(43, 27, 74, .40); --g-stroke: rgba(255,255,255,.24); --g-hl: rgba(255,255,255,.14);
+  --g-accent: #5cf2c4; --g-on: #ffffff; --g-sub: rgba(255,255,255,.66);
+  --wall-a: #3b1d6e; --wall-b: #0b0a1a; --wall-c: #0f7a6a;
+}
+
+body {
+  background: var(--page); color: var(--ink); font-family: var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.brand { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.brand h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 44px); margin: 0; letter-spacing: -.02em; text-wrap: balance; }
+.brand h1 span { color: var(--g-accent); transition: color .4s; }
+.brand p { margin: 0; color: var(--ink-dim); font-family: var(--hi); font-size: 15px; max-width: 62ch; line-height: 1.6; }
+
+.switch { display: flex; gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 999px; background: var(--page-2); }
+.switch button {
+  font: 600 13px var(--body); color: var(--ink-dim); background: none; border: 0; border-radius: 999px;
+  padding: 8px 14px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+}
+.switch button i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.switch button[aria-pressed="true"] { background: var(--ink); color: var(--page); }
+.switch button:focus-visible, .chip:focus-visible, .btn:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 36px 28px; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+figcaption { display: flex; flex-direction: column; gap: 6px; padding-inline: 4px; }
+figcaption b { font-family: var(--display); font-weight: 500; font-size: 18px; }
+figcaption b em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--ink-dim); letter-spacing: .08em; margin-right: 8px; }
+figcaption span { font-family: var(--hi); color: var(--ink-dim); font-size: 14px; line-height: 1.6; }
+
+/* ---------- Phone ---------- */
+.phone {
+  width: 100%; max-width: 330px; aspect-ratio: 9 / 19.5; margin: 0 auto;
+  border-radius: 44px; padding: 10px; background: #050506; overflow: hidden; display: flex;
+  box-shadow: 0 0 0 1px #2a2d35, 0 30px 60px -20px rgba(0,0,0,.7);
+}
+.screen {
+  position: relative; flex: 1; min-height: 0; border-radius: 35px; overflow: hidden; color: var(--g-on);
+  background:
+    radial-gradient(120% 70% at 15% 5%, var(--wall-a), transparent 60%),
+    radial-gradient(90% 60% at 100% 85%, var(--wall-c), transparent 65%),
+    var(--wall-b);
+  transition: background .5s;
+  display: flex; flex-direction: column; padding: 14px 14px 12px; gap: 10px;
+  font-family: var(--body);
+}
+.screen.focus { background: radial-gradient(100% 60% at 50% 30%, #1b1e24, #08090b 70%); }
+.status { display: flex; justify-content: space-between; font: 500 11px var(--mono); color: var(--g-sub); padding: 2px 8px 0; }
+.status .dots { display: flex; gap: 4px; align-items: center; }
+.status .dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
+
+.glass {
+  position: relative; background: var(--g-tint); border: 1px solid var(--g-stroke); border-radius: 24px;
+  backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: inset 0 1px 0 var(--g-hl);
+  transition: background .5s, border-color .5s;
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sub { color: var(--g-sub); font-size: 11px; }
+.acc { color: var(--g-accent); transition: color .4s; }
+.lbl { font: 600 10px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--g-sub); }
+
+/* Home widgets */
+.w-clock { padding: 16px 18px; display: flex; align-items: flex-end; justify-content: space-between; }
+.w-clock .t { font-family: var(--display); font-weight: 300; font-size: 64px; line-height: .9; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.w-clock .d { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+.w-clock .d b { font: 600 12px var(--body); letter-spacing: .1em; }
+.w-small { padding: 14px; display: flex; flex-direction: column; gap: 8px; min-height: 92px; justify-content: space-between; }
+.big { font-family: var(--display); font-weight: 500; font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+.bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.14); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--g-accent); border-radius: 3px; transition: background .4s; }
+.w-agenda { padding: 12px 14px; display: flex; gap: 12px; align-items: center; }
+.w-agenda .when { font: 500 12px var(--mono); color: var(--g-accent); border-right: 1px solid var(--g-stroke); padding-right: 12px; }
+.w-agenda .what { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.w-agenda .what b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.focus-chip {
+  display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 10px 14px; border-radius: 999px; cursor: pointer;
+  font: 600 12px var(--body); color: var(--g-on); width: 100%;
+}
+.focus-chip .tgl { width: 34px; height: 20px; border-radius: 10px; background: rgba(255,255,255,.18); position: relative; }
+.focus-chip .tgl::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+
+.apps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 6px; margin-top: auto; }
+.app { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; color: var(--g-on); }
+.ico {
+  width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center;
+  background: var(--g-tint); border: 1px solid var(--g-stroke); box-shadow: inset 0 1px 0 var(--g-hl);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: background .5s;
+}
+.ico svg { width: 20px; height: 20px; stroke: var(--g-on); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.dock { display: flex; justify-content: space-around; padding: 10px 6px; border-radius: 28px; }
+.dock .ico { background: transparent; border-color: transparent; box-shadow: none; backdrop-filter: none; }
+.search { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 999px; font-size: 12px; color: var(--g-sub); }
+.search svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* Gallery */
+.seg { display: flex; gap: 8px; }
+.sw { flex: 1; border-radius: 18px; padding: 10px; height: 74px; display: flex; flex-direction: column; justify-content: space-between; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,.15); cursor: pointer; color: #fff; font-family: var(--body); text-align: left; }
+.sw[aria-pressed="true"] { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+.sw small { font-weight: 500; opacity: .7; font-size: 9px; }
+.list { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 18px; }
+.thumb { width: 52px; height: 40px; border-radius: 12px; background: rgba(255,255,255,.08); border: 1px solid var(--g-stroke); display: grid; place-items: center; font: 300 15px var(--display); flex-shrink: 0; }
+.item .meta { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.item .meta b { font-size: 13px; font-weight: 600; }
+.tag { font: 600 9px var(--body); letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; border-radius: 6px; white-space: nowrap; }
+.tag.free { color: var(--ok); background: rgba(103,217,163,.12); }
+.tag.pro { color: var(--pro); background: rgba(217,180,106,.14); }
+.perm { font-size: 10px; color: var(--g-sub); display: flex; align-items: center; gap: 4px; }
+.perm::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+.perm.ask::before { background: var(--pro); }
+.add { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--g-stroke); display: grid; place-items: center; font-size: 16px; color: var(--g-on); flex-shrink: 0; }
+.h { font-family: var(--display); font-weight: 500; font-size: 22px; padding: 4px 4px 0; }
+
+/* Focus setup */
+.sheet { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 12px var(--body); padding: 8px 12px; border-radius: 999px; border: 1px solid var(--g-stroke); background: transparent; color: var(--g-on); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--g-on); color: #111; border-color: var(--g-on); }
+.allow { display: flex; gap: 8px; }
+.allow .app { width: 52px; }
+.allow .ico.on { border-color: var(--g-accent); }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.sw-t { width: 34px; height: 20px; border-radius: 10px; background: var(--g-accent); position: relative; transition: background .4s; flex-shrink: 0; }
+.sw-t::after { content: ""; position: absolute; top: 3px; right: 3px; width: 14px; height: 14px; border-radius: 50%; background: #111; }
+.sw-t.off { background: rgba(255,255,255,.18); }
+.sw-t.off::after { right: auto; left: 3px; background: #fff; }
+.btn { font: 700 14px var(--body); padding: 14px; border-radius: 18px; border: 0; background: var(--g-accent); color: #111; cursor: pointer; width: 100%; transition: background .4s; }
+
+/* Focus active */
+.ring-wrap { display: grid; place-items: center; margin-top: 18px; position: relative; }
+.ring-wrap svg { width: 210px; height: 210px; transform: rotate(-90deg); }
+.ring-wrap .c { position: absolute; text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.ring-wrap .c .t { font-family: var(--display); font-weight: 300; font-size: 52px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+.intent { text-align: center; font-size: 13px; color: #c9ccd3; }
+.intent b { color: #fff; font-weight: 600; }
+.focus .ico { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.09); }
+.focus .app { color: #c9ccd3; }
+.mute { display: flex; justify-content: center; gap: 14px; font-size: 11px; color: #8a8f99; }
+.mute span { display: flex; align-items: center; gap: 5px; }
+.mute span::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #67d9a3; }
+.exit { text-align: center; font-size: 11px; color: #6f7480; padding-bottom: 4px; }
+
+/* Interrupt */
+.blur-home { position: absolute; inset: 0; filter: grayscale(1) brightness(.45) blur(2px); display: flex; flex-direction: column; padding: 14px; gap: 10px; }
+.modal { position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 20px 18px 16px; border-radius: 28px; display: flex; flex-direction: column; gap: 14px; background: rgba(22, 23, 28, .78); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.modal h3 { margin: 0; font-family: var(--display); font-weight: 500; font-size: 22px; line-height: 1.2; }
+.modal p { margin: 0; font-size: 12px; color: #a6abb5; line-height: 1.5; }
+.hold { position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,.18); background: transparent; color: #e7e9ee; font: 600 13px var(--body); padding: 13px; border-radius: 16px; cursor: pointer; width: 100%; }
+.hold i { position: absolute; inset: 0; width: 0; background: rgba(255,255,255,.12); transition: width 0s; }
+.hold.go i { width: 100%; transition: width 3s linear; }
+.hold span { position: relative; }
+
+/* Summary */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { padding: 14px; border-radius: 20px; display: flex; flex-direction: column; gap: 6px; }
+.week { display: flex; align-items: flex-end; gap: 8px; height: 90px; padding: 14px 14px 10px; border-radius: 20px; }
+.week div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; font: 500 9px var(--mono); color: var(--g-sub); }
+.week div i { width: 100%; border-radius: 5px; background: rgba(255,255,255,.16); display: block; }
+.week div.today i { background: var(--g-accent); }
+
+.notes { border-top: 1px solid var(--line); padding-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.notes div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.notes h2 { margin: 0; font: 500 16px var(--display); }
+.notes p { margin: 0; color: var(--ink-dim); font-family: var(--hi); font-size: 14px; line-height: 1.65; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Glint<span>.</span> UI samples</h1>
+      <p>मिनिमल, साफ़ और काम का। ऊपर थीम बदलकर देखें, सारी स्क्रीनें एक साथ बदलेंगी। फोकस मोड की चार स्क्रीनें नीचे हैं।</p>
+    </div>
+    <div class="switch" role="group" aria-label="Glass theme">
+      <button id="t-frost" data-t="frost" aria-pressed="false"><i style="background:#8fd0ff"></i>Frost</button>
+      <button id="t-smoke" data-t="smoke" aria-pressed="true"><i style="background:#ffb547"></i>Smoke</button>
+      <button id="t-aurora" data-t="aurora" aria-pressed="false"><i style="background:#5cf2c4"></i>Aurora</button>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- 1 HOME -->
+    <figure>
+      <div class="phone"><div class="screen">
+        <div class="status"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <button class="glass focus-chip" id="chip-focus" type="button" aria-label="Start focus mode">
+          <span style="display:flex;gap:8px;align-items:center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+            Focus mode
+          </span>
+          <span class="tgl"></span>
+        </button>
+        <div class="glass w-clock">
+          <div class="t clk">9:41</div>
+          <div class="d"><b class="acc day">TUE</b><span class="sub date">3 Nov</span></div>
+        </div>
+        <div class="row">
+          <div class="glass w-small">
+            <span class="lbl">Weather</span>
+            <div><div class="big">24°</div><div class="sub">Clear · Jaipur</div></div>
+          </div>
+          <div class="glass w-small">
+            <span class="lbl">Battery</span>
+            <div><div class="big">82<span style="font-size:16px">%</span></div><div class="bar" style="margin-top:8px"><i style="width:82%"></i></div></div>
+          </div>
+        </div>
+        <div class="glass w-agenda">
+          <span class="when">11:00</span>
+          <span class="what"><b>Design review: widget gallery</b><span class="sub">in 1 h 19 m · Meet</span></span>
+        </div>
+        <div class="apps">
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>Calendar</div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>Maps</div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></div>Camera</div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg></div>Notes</div>
+        </div>
+        <div class="glass search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Search apps, web, settings</div>
+        <div class="glass dock">
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2 1.5a11 11 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div></div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div></div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div></div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="18" r="2.5"/><circle cx="18" cy="16" r="2.5"/><path d="M11.5 18V6l9-2v12"/></svg></div></div>
+        </div>
+      </div></div>
+      <figcaption>
+        <b><em>01</em>Home screen</b>
+        <span>एक थीम पूरे होम पर: विजेट, आइकन, डॉक और सर्च बार। सबसे ऊपर फोकस मोड का एक टैप वाला स्विच। ज़रूरी चीज़ें ही, कोई भीड़ नहीं।</span>
+      </figcaption>
+    </figure>
+
+    <!-- 2 GALLERY -->
+    <figure>
+      <div class="phone"><div class="screen">
+        <div class="status"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <div class="h">Style</div>
+        <div class="seg" role="group" aria-label="Theme presets">
+          <button class="sw" data-t="frost" aria-pressed="false" style="background:linear-gradient(150deg,#4a7bb0,#1a2c48)">Frost<small>Free</small></button>
+          <button class="sw" data-t="smoke" aria-pressed="true" style="background:linear-gradient(150deg,#4a3a2a,#141418)">Smoke<small>Free</small></button>
+          <button class="sw" data-t="aurora" aria-pressed="false" style="background:linear-gradient(150deg,#4a2a86,#0f6e60)">Aurora<small>Free</small></button>
+        </div>
+        <div class="h" style="font-size:18px">Widgets</div>
+        <div class="list">
+          <div class="glass item"><div class="thumb clk">9:41</div><div class="meta"><b>Big clock</b><span class="perm">No permission</span></div><span class="tag free">Free</span><span class="add">+</span></div>
+          <div class="glass item"><div class="thumb">24°</div><div class="meta"><b>Weather now</b><span class="perm ask">City or approx. location</span></div><span class="tag free">Free</span><span class="add">+</span></div>
+          <div class="glass item"><div class="thumb" style="font-size:12px">82%</div><div class="meta"><b>Battery</b><span class="perm">No permission</span></div><span class="tag free">Free</span><span class="add">+</span></div>
+          <div class="glass item"><div class="thumb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="18" r="2.5"/><circle cx="18" cy="16" r="2.5"/><path d="M11.5 18V6l9-2v12"/></svg></div><div class="meta"><b>Now playing</b><span class="perm ask">Asks when added</span></div><span class="tag pro">Pro</span><span class="add">+</span></div>
+          <div class="glass item"><div class="thumb" style="font-size:12px">4,210</div><div class="meta"><b>Steps today</b><span class="perm ask">Asks when added</span></div><span class="tag pro">Pro</span><span class="add">+</span></div>
+        </div>
+      </div></div>
+      <figcaption>
+        <b><em>02</em>Style and widgets</b>
+        <span>थीम एक टैप में बदलती है (यहाँ दबाकर देखें)। हर विजेट पर साफ़ लिखा है कि उसे कौन-सी परमिशन चाहिए। ज़्यादातर को कोई नहीं।</span>
+      </figcaption>
+    </figure>
+
+    <!-- 3 FOCUS SETUP -->
+    <figure>
+      <div class="phone"><div class="screen">
+        <div class="status"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <div class="h">Start focus</div>
+        <div class="glass sheet">
+          <span class="lbl">What are you working on?</span>
+          <div class="chips" id="intent-chips">
+            <button class="chip" aria-pressed="true" type="button">Deep work</button>
+            <button class="chip" aria-pressed="false" type="button">Study</button>
+            <button class="chip" aria-pressed="false" type="button">Reading</button>
+            <button class="chip" aria-pressed="false" type="button">Family time</button>
+          </div>
+          <span class="lbl">For how long</span>
+          <div class="chips" id="dur-chips">
+            <button class="chip" aria-pressed="false" type="button" data-m="25">25 min</button>
+            <button class="chip" aria-pressed="true" type="button" data-m="50">50 min</button>
+            <button class="chip" aria-pressed="false" type="button" data-m="90">90 min</button>
+            <button class="chip" aria-pressed="false" type="button" data-m="0">Until I stop</button>
+          </div>
+          <span class="lbl">Apps you can still open</span>
+          <div class="allow">
+            <div class="app"><div class="ico on"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2 1.5a11 11 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div>Phone</div>
+            <div class="app"><div class="ico on"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>Maps</div>
+            <div class="app"><div class="ico on"><svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg></div>Notes</div>
+            <div class="app"><div class="ico" style="border-style:dashed"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>Add</div>
+          </div>
+          <div class="toggle-row"><span>Silence notifications</span><span class="sw-t"></span></div>
+          <div class="toggle-row"><span>Grey out other apps</span><span class="sw-t"></span></div>
+          <div class="toggle-row"><span>Let favourite contacts call</span><span class="sw-t off"></span></div>
+        </div>
+        <button class="btn" type="button" id="start-btn" style="margin-top:auto">Start 50 min focus</button>
+      </div></div>
+      <figcaption>
+        <b><em>03</em>Focus mode setup</b>
+        <span>तीन सवाल, बस: क्या कर रहे हो, कितनी देर, और कौन-से ऐप खुले रहें। बाकी सब छिप जाते हैं और नोटिफिकेशन चुप।</span>
+      </figcaption>
+    </figure>
+
+    <!-- 4 FOCUS ACTIVE -->
+    <figure>
+      <div class="phone"><div class="screen focus">
+        <div class="status"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="110" r="98" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="6"/>
+            <circle id="ring" cx="110" cy="110" r="98" fill="none" stroke="var(--g-accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="615.75" stroke-dashoffset="215"/>
+          </svg>
+          <div class="c">
+            <span class="lbl" style="color:#8a8f99">Remaining</span>
+            <span class="t" id="timer">32:40</span>
+            <span class="sub" style="color:#8a8f99">ends 10:14</span>
+          </div>
+        </div>
+        <div class="intent">Focusing on <b>Deep work</b></div>
+        <div class="mute"><span>14 notifications held</span><span>2 opens blocked</span></div>
+        <div class="apps" style="grid-template-columns:repeat(3,1fr);padding:0 22px">
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2 1.5a11 11 0 0 0 5.5 5.5L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div>Phone</div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div>Maps</div>
+          <div class="app"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/></svg></div>Notes</div>
+        </div>
+        <div class="exit">Hold the timer for 3 s to end early</div>
+      </div></div>
+      <figcaption>
+        <b><em>04</em>Focus mode: running</b>
+        <span>होम स्क्रीन बदलकर शांत हो जाती है: बड़ा टाइमर, सिर्फ़ चुने हुए ऐप, और कितने नोटिफिकेशन रोके गए। विजेट और रंग गायब ताकि ध्यान न भटके।</span>
+      </figcaption>
+    </figure>
+
+    <!-- 5 INTERRUPT -->
+    <figure>
+      <div class="phone"><div class="screen">
+        <div class="blur-home">
+          <div class="glass w-clock"><div class="t clk">9:41</div></div>
+          <div class="row"><div class="glass w-small"></div><div class="glass w-small"></div></div>
+        </div>
+        <div class="status" style="position:relative"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <div class="modal">
+          <span class="lbl" style="color:#8a8f99">Instagram is paused</span>
+          <h3>You have <span class="acc" id="left2">32 min</span> of focus left.</h3>
+          <p>You opened this 2 times in this session. Is it worth breaking the streak?</p>
+          <button class="btn" type="button">Back to focus</button>
+          <button class="hold" type="button" id="hold"><i></i><span id="hold-t">Hold 3 s to open for 5 min</span></button>
+        </div>
+      </div></div>
+      <figcaption>
+        <b><em>05</em>When you reach for a blocked app</b>
+        <span>ऐप पूरी तरह बंद नहीं होता, बस थोड़ी रुकावट: 3 सेकंड दबाकर रखो तो 5 मिनट के लिए खुलेगा। इतना रुकना अक्सर आदत तोड़ने के लिए काफ़ी है। (बटन दबाकर देखें)</span>
+      </figcaption>
+    </figure>
+
+    <!-- 6 SUMMARY -->
+    <figure>
+      <div class="phone"><div class="screen">
+        <div class="status"><span class="clk-s">9:41</span><span class="dots"><i></i><i></i><i></i> 82%</span></div>
+        <div class="h">Session done</div>
+        <div class="glass w-clock" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <span class="lbl">You focused for</span>
+          <div class="t" style="font-size:54px">50<span style="font-size:22px"> min</span></div>
+          <span class="sub">Deep work · 9:24 to 10:14</span>
+        </div>
+        <div class="stats">
+          <div class="glass stat"><span class="lbl">Streak</span><span class="big acc">4 days</span></div>
+          <div class="glass stat"><span class="lbl">Held back</span><span class="big">14</span><span class="sub">notifications</span></div>
+        </div>
+        <div class="glass week" aria-label="Focus minutes this week">
+          <div><i style="height:40%"></i>M</div>
+          <div><i style="height:72%"></i>T</div>
+          <div><i style="height:20%"></i>W</div>
+          <div><i style="height:55%"></i>T</div>
+          <div><i style="height:0%"></i>F</div>
+          <div><i style="height:30%"></i>S</div>
+          <div class="today"><i style="height:85%"></i>Today</div>
+        </div>
+        <button class="btn" type="button" style="margin-top:auto">Back to home</button>
+      </div></div>
+      <figcaption>
+        <b><em>06</em>Focus summary</b>
+        <span>सेशन के बाद छोटा सा हिसाब: कितनी देर, कितने नोटिफिकेशन रोके, और हफ़्ते का ग्राफ़। स्ट्रीक लोगों को रोज़ वापस लाती है।</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <section class="notes">
+    <div><h2>Design rules</h2><p>एक ही ग्लास थीम सब पर। हर विजेट में एक मुख्य जानकारी, बड़े अंक, छोटे लेबल। रंग सिर्फ़ एक accent, बाकी सफ़ेद और धुंधला काँच।</p></div>
+    <div><h2>Focus mode, technically</h2><p>लॉन्चर खुद होम बदलता है, इसलिए कोई Accessibility permission नहीं चाहिए। नोटिफिकेशन रोकने के लिए Android का DND (notification policy access) सिर्फ़ तब माँगेंगे जब यूज़र पहली बार फोकस शुरू करे।</p></div>
+    <div><h2>Free vs Pro</h2><p>फोकस मोड बेसिक (टाइमर, ऐप छिपाना) फ़्री। शेड्यूल (जैसे रोज़ सुबह 9 से 12), हफ़्ते के आँकड़े और कस्टम ब्लॉक मैसेज Pro में।</p></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var body = document.body;
+  function setTheme(t) {
+    body.setAttribute('data-glass', t);
+    document.querySelectorAll('[data-t]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.t === t)); });
+    try { localStorage.setItem('glint-theme', t); } catch (e) {}
+  }
+  document.querySelectorAll('[data-t]').forEach(function (b) { b.addEventListener('click', function () { setTheme(b.dataset.t); }); });
+  var saved = null; try { saved = localStorage.getItem('glint-theme'); } catch (e) {}
+  setTheme(saved || 'smoke');
+
+  // Live clock
+  var days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function tick() {
+    var d = new Date(), h = d.getHours() % 12 || 12, m = String(d.getMinutes()).padStart(2, '0');
+    document.querySelectorAll('.clk').forEach(function (e) { e.textContent = h + ':' + m; });
+    document.querySelectorAll('.clk-s').forEach(function (e) { e.textContent = h + ':' + m; });
+    document.querySelectorAll('.day').forEach(function (e) { e.textContent = days[d.getDay()]; });
+    document.querySelectorAll('.date').forEach(function (e) { e.textContent = d.getDate() + ' ' + mons[d.getMonth()]; });
+  }
+  tick(); setInterval(tick, 10000);
+
+  // Chips (single select per group)
+  ['intent-chips', 'dur-chips'].forEach(function (id) {
+    var g = document.getElementById(id);
+    g.querySelectorAll('.chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        g.querySelectorAll('.chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+        c.setAttribute('aria-pressed', 'true');
+        if (id === 'dur-chips') {
+          var m = +c.dataset.m;
+          document.getElementById('start-btn').textContent = m ? 'Start ' + m + ' min focus' : 'Start focus';
+        }
+      });
+    });
+  });
+
+  // Focus countdown (demo: 50 min session, 32:40 left)
+  var total = 50 * 60, left = 32 * 60 + 40, C = 615.75;
+  var ring = document.getElementById('ring'), timer = document.getElementById('timer'), left2 = document.getElementById('left2');
+  function render() {
+    timer.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    ring.setAttribute('stroke-dashoffset', String(C * (1 - left / total)));
+    left2.textContent = Math.ceil(left / 60) + ' min';
+  }
+  render(); setInterval(function () { if (left > 0) { left--; render(); } }, 1000);
+
+  // Hold-to-open friction
+  var hold = document.getElementById('hold'), ht = document.getElementById('hold-t'), timerId;
+  function start(e) { e.preventDefault(); hold.classList.add('go'); ht.textContent = 'Keep holding…'; timerId = setTimeout(function () { ht.textContent = 'Opened for 5 min'; }, 3000); }
+  function stop() { clearTimeout(timerId); if (ht.textContent !== 'Opened for 5 min') { hold.classList.remove('go'); ht.textContent = 'Hold 3 s to open for 5 min'; } else { setTimeout(function () { hold.classList.remove('go'); ht.textContent = 'Hold 3 s to open for 5 min'; }, 1500); } }
+  hold.addEventListener('pointerdown', start);
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { hold.addEventListener(ev, stop); });
+})();
+</script>

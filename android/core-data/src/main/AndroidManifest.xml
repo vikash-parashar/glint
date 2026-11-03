@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Normal permission, no prompt: only for weather by city name (Open-Meteo). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Runtime permissions, each asked only when the user adds a feature that needs it. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <application>
+        <!-- Lets the Music widget and Dock mode read what's playing. The user enables it in
+             system settings ("Notification access"); we only link there from the Music widget. -->
+        <service
+            android:name="app.glint.data.MediaListenerService"
+            android:exported="true"
+            android:label="Glint music widget"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

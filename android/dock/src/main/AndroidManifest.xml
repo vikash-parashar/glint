@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Keeps the bedside clock on while docked. Normal permission, no prompt. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application>
+        <!-- Full-screen bedside clock. Shows over the lock screen so the phone stays locked. -->
+        <activity
+            android:name="app.glint.dock.DockActivity"
+            android:exported="true"
+            android:label="@string/dock_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="app.glint.dock"
+            android:excludeFromRecents="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
+
+        <!-- Screen saver: Android starts this by itself while the phone charges. -->
+        <service
+            android:name="app.glint.dock.GlintDockDream"
+            android:exported="true"
+            android:label="@string/dock_dream_name"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter><action android:name="android.service.dreams.DreamService" /></intent-filter>
+            <meta-data android:name="android.service.dream" android:resource="@xml/dock_dream" />
+        </service>
+
+        <!-- Quick Settings tile: start Dock by hand. -->
+        <service
+            android:name="app.glint.dock.DockTileService"
+            android:exported="true"
+            android:icon="@android:drawable/ic_lock_idle_alarm"
+            android:label="@string/dock_tile"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter><action android:name="android.service.quicksettings.action.QS_TILE" /></intent-filter>
+        </service>
+    </application>
+</manifest>

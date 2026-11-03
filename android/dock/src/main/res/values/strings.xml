@@ -1,0 +1,5 @@
+<resources>
+    <string name="dock_name">Glint Dock</string>
+    <string name="dock_dream_name">Glint Dock (bedside clock)</string>
+    <string name="dock_tile">Dock</string>
+</resources>

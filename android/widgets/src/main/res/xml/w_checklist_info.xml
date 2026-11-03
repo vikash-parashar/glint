@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/w_checklist_desc"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:configure="app.glint.widgets.config.WidgetConfigActivity"
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    android:minWidth="114dp"
+    android:minHeight="100dp"
+    android:minResizeWidth="57dp"
+    android:minResizeHeight="50dp"
+    android:targetCellWidth="3"
+    android:targetCellHeight="3"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen|keyguard" />
