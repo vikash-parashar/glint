@@ -14,7 +14,7 @@
     <string name="w_battery">Glint Battery</string>
     <string name="w_battery_desc">Battery level and charging. No permissions.</string>
     <string name="w_steps">Glint Steps</string>
-    <string name="w_steps_desc">Today's steps from the phone's step counter.</string>
+    <string name="w_steps_desc">Today\'s steps from the phone\'s step counter.</string>
     <string name="w_music">Glint Music</string>
     <string name="w_music_desc">Now playing with play, pause and skip.</string>
     <string name="w_note">Glint Note</string>

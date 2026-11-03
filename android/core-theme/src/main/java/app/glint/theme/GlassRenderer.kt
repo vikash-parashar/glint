@@ -61,7 +61,7 @@ object GlassRenderer {
 
         // 4. Hairline stroke, brighter on top edge.
         val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
+            this.style = Paint.Style.STROKE
             strokeWidth = 1f * density
             shader = LinearGradient(
                 0f, 0f, 0f, h.toFloat(),
