@@ -7,8 +7,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.unit.dp
+import app.glint.launcher.data.GlintWidgetHost
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -30,6 +34,12 @@ fun LauncherRoot(
     onOpenSettings: () -> Unit,
     onGrantDnd: () -> Unit,
     hasDndAccess: () -> Boolean,
+    widgetIds: List<Int>,
+    host: GlintWidgetHost,
+    onAddWidget: () -> Unit,
+    onWallpaper: () -> Unit,
+    onDock: () -> Unit,
+    onSetHome: () -> Unit,
 ) {
     var askCity by remember { mutableStateOf(false) }
     val session = home.session
@@ -40,10 +50,24 @@ fun LauncherRoot(
         startFocus = { vm.openFocusSetup(true) },
         askCalendar = onAskCalendar,
         askCity = { askCity = true },
-        openSettings = onOpenSettings,
+        openSettings = { vm.openMenu(true) },
+        widgetArea = { mod ->
+            Column(mod, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (!overlays.isDefaultHome) SetHomeBanner(home.style, onSetHome)
+                HomeWidgets(
+                    ids = widgetIds, host = host, style = home.style, editing = overlays.editingWidgets,
+                    onRemove = { vm.removeWidget(it); host.host.deleteAppWidgetId(it) },
+                    onMove = { id, up -> vm.moveWidget(id, up) },
+                    onDoneEditing = { vm.editWidgets(false) },
+                    onAdd = onAddWidget,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        },
     )
 
     BackHandler(overlays.drawerOpen) { vm.openDrawer(false) }
+    BackHandler(overlays.editingWidgets) { vm.editWidgets(false) }
 
     MaterialTheme(colorScheme = if (home.style.kind == StyleKind.Ink) lightColorScheme() else darkColorScheme()) {
         StyleBackground(home.style, muted = session != null) {
@@ -89,6 +113,17 @@ fun LauncherRoot(
             }
 
             overlays.summary?.let { FocusSummaryDialog(it, home.stats, onClose = { vm.dismissSummary() }) }
+
+            if (overlays.menuOpen) HomeMenu(
+                style = home.style, hasWidgets = widgetIds.isNotEmpty(),
+                onAddWidget = { vm.openMenu(false); onAddWidget() },
+                onEditWidgets = { vm.editWidgets(true) },
+                onWallpaper = { vm.openMenu(false); onWallpaper() },
+                onStyle = { vm.setStyle(it) },
+                onDock = { vm.openMenu(false); onDock() },
+                onSettings = { vm.openMenu(false); onOpenSettings() },
+                onDismiss = { vm.openMenu(false) },
+            )
 
             if (askCity) CityDialog(overlays.city ?: "", onSave = { vm.setCity(it); askCity = false }, onDismiss = { askCity = false })
         }

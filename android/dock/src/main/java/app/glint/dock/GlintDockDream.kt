@@ -42,7 +42,8 @@ class GlintDockDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
         val view = ComposeView(this).apply {
             setViewTreeLifecycleOwner(this@GlintDockDream)
             setViewTreeSavedStateRegistryOwner(this@GlintDockDream)
-            setContent { DockScreen(rememberDockState(this@GlintDockDream), settings) }
+            val isPro = app.glint.data.ProStore(this@GlintDockDream).isPro
+            setContent { DockScreen(rememberDockState(this@GlintDockDream), settings, locked = !isPro) }
         }
         setContentView(view)
     }
@@ -51,7 +52,7 @@ class GlintDockDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
         super.onDreamingStarted()
         registry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         registry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-        if (settings.alarmsOnly) dnd.enableAlarmsOnly()
+        if (settings.alarmsOnly && app.glint.data.ProStore(this).isPro) dnd.enableAlarmsOnly()
     }
 
     override fun onDreamingStopped() {

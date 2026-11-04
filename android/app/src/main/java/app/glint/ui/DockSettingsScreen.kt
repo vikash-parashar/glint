@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import app.glint.data.ProStore
 import app.glint.dock.DockSettings
 import app.glint.dock.DockTrigger
 import app.glint.focus.DndController
@@ -33,11 +34,20 @@ fun DockSettingsScreen(onBack: () -> Unit) {
     var exitUnplug by remember { mutableStateOf(s.exitOnUnplug) }
     var rotateOn by remember { mutableStateOf(DockTrigger.autoRotateOn(ctx)) }
     var dndOk by remember { mutableStateOf(dnd.hasAccess) }
+    val pro = remember { ProStore(ctx) }
+    var isPro by remember { mutableStateOf(pro.isPro) }
     LifecycleResumeEffect(Unit) { rotateOn = DockTrigger.autoRotateOn(ctx); dndOk = dnd.hasAccess; onPauseOrDispose { } }
 
     Column(Modifier.fillMaxSize().background(Color(0xFF0F1013)).systemBarsPadding().verticalScroll(rememberScrollState()).padding(bottom = 24.dp)) {
         Header("Dock", "Set your phone on its side while it charges and it turns into a bedside clock with your calendar and alarms. Only alarms can make a sound.", onBack)
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.fillMaxWidth().background(Color(0xFF17181C), RoundedCornerShape(16.dp)).padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(if (isPro) "Glint Pro is on" else "Dock is a Glint Pro extra", color = Color(0xFFF3F1EE), fontWeight = FontWeight.SemiBold)
+                    Text(if (isPro) "Thanks for supporting Glint." else "Launcher and widgets stay free. Pro is ${ProStore.PRICE_LABEL}.", color = Color(0xFFA7A6AC), fontSize = 13.sp)
+                }
+                if (!isPro && pro.canTestUnlock) FilledTonalButton(onClick = { pro.setPro(true); isPro = true }) { Text("Unlock (test)") }
+            }
             Button(onClick = { ctx.startActivity(DockTrigger.launchIntent(ctx, auto = false)) },
                 modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(16.dp)) { Text("Try Dock now", fontWeight = FontWeight.SemiBold) }
 

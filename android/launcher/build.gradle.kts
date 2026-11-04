@@ -22,6 +22,8 @@ dependencies {
     implementation(project(":focus"))
     implementation(project(":core-data"))
     implementation(project(":dock"))
+    implementation(project(":widgets"))
+    implementation(libs.glance.appwidget)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime)

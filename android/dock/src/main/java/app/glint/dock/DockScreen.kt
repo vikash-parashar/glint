@@ -103,7 +103,7 @@ private class DockInk(val bg: Color, val fg: Color, val dim: Color, val accent: 
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DockScreen(state: DockState, settings: DockSettings, onTap: () -> Unit = {}) {
+fun DockScreen(state: DockState, settings: DockSettings, onTap: () -> Unit = {}, locked: Boolean = false) {
     val context = LocalContext.current
     val style by remember { StyleRepository(context).active }.collectAsState(initial = GlintStyles.of(app.glint.theme.StyleKind.Bento))
     val hour = Instant.ofEpochMilli(state.now).atZone(ZoneId.systemDefault()).hour
@@ -119,7 +119,7 @@ fun DockScreen(state: DockState, settings: DockSettings, onTap: () -> Unit = {})
     LaunchedEffect(pager.currentPage) { settings.clockFace = DockFace.entries[pager.currentPage] }
 
     BoxWithConstraints(Modifier.fillMaxSize().background(ink.bg)) {
-        if (maxHeight > maxWidth) {
+        if (locked || maxHeight > maxWidth) {
             // Upright (screen saver on a phone that isn't on its side): a calm stacked clock.
             Column(Modifier.fillMaxSize().offset { shift }, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 val d = Instant.ofEpochMilli(state.now).atZone(ZoneId.systemDefault())
@@ -127,6 +127,7 @@ fun DockScreen(state: DockState, settings: DockSettings, onTap: () -> Unit = {})
                 Clock(state.now, ink, 96.sp)
                 AlarmLine(state, ink, center = true)
                 StatusBar(state, ink, Modifier.padding(top = 24.dp))
+                if (locked) Text("Full Dock mode is part of Glint Pro", color = ink.dim, fontSize = 13.sp, modifier = Modifier.padding(top = 20.dp))
             }
         } else {
         val scope = rememberCoroutineScope()

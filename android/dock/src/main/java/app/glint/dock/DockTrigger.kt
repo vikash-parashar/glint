@@ -17,7 +17,7 @@ object DockTrigger {
     fun charging(context: Context): Boolean = batteryNow(context)?.charging == true
 
     fun ready(context: Context): Boolean =
-        DockSettings(context).autoStart && autoRotateOn(context) && charging(context)
+        app.glint.data.ProStore(context).isPro && DockSettings(context).autoStart && autoRotateOn(context) && charging(context)
 
     fun launchIntent(context: Context, auto: Boolean): Intent =
         Intent(context, DockActivity::class.java)

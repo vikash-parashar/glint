@@ -29,17 +29,18 @@ import kotlinx.coroutines.launch
 
 /** All 51 designs grouped by type. "Add" asks the launcher to place it with that exact design. */
 @Composable
-fun WidgetGallery(style: GlintPalette, onBack: () -> Unit) {
+fun WidgetGallery(style: GlintPalette, toGlintHome: Boolean, onAddedToHome: () -> Unit, onBack: () -> Unit) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val snack = remember { SnackbarHostState() }
-    val pinSupported = remember { WidgetPinning.supported(ctx) }
+    // On Glint home we place the widget ourselves; on another launcher we ask it to pin.
+    val pinSupported = toGlintHome || remember { WidgetPinning.supported(ctx) }
     val groups = remember { WidgetCatalog.all.groupBy { it.kind } }
 
     Scaffold(containerColor = Color(0xFF0F1013), snackbarHost = { SnackbarHost(snack) }) { pad ->
         LazyColumn(Modifier.padding(pad).fillMaxSize(), contentPadding = PaddingValues(vertical = 16.dp)) {
             item {
-                Header("Widgets", "${WidgetCatalog.all.size} designs in ${groups.size} types. They follow your style: ${style.name}.", onBack)
+                Header("Widgets", "${WidgetCatalog.all.size} designs in ${groups.size} types, all free. They follow your style: ${style.name}.", onBack)
                 if (!pinSupported) Text(
                     "Your launcher can't add widgets from apps. Long-press your home screen, tap Widgets and look for Glint.",
                     color = Color(0xFFFFB59E), fontSize = 13.sp, modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
@@ -52,7 +53,14 @@ fun WidgetGallery(style: GlintPalette, onBack: () -> Unit) {
                     LazyRow(contentPadding = PaddingValues(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         items(designs, key = { it.id }) { d ->
                             DesignCard(d, style, enabled = pinSupported) {
-                                scope.launch {
+                                if (toGlintHome) {
+                                    ctx.startActivity(
+                                        android.content.Intent("app.glint.action.ADD_WIDGET").setPackage(ctx.packageName)
+                                            .putExtra("design", d.id)
+                                            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK),
+                                    )
+                                    onAddedToHome()
+                                } else scope.launch {
                                     val ok = WidgetPinning.pin(ctx, d)
                                     snack.showSnackbar(if (ok) "Confirm on your home screen to place it" else "Couldn't add. Try from your launcher's widget list.")
                                 }

@@ -64,13 +64,16 @@ class MainActivity : ComponentActivity() {
             }
 
             var screen by remember { mutableStateOf(runCatching { Screen.valueOf(intent.getStringExtra("screen") ?: "Home") }.getOrDefault(Screen.Home)) }
-            BackHandler(enabled = screen != Screen.Home) { screen = Screen.Home }
+            // Opened straight to a screen from the home menu: Back returns to home.
+            val direct = intent.getStringExtra("screen") != null
+            val back: () -> Unit = { if (direct) finish() else screen = Screen.Home }
+            BackHandler(enabled = screen != Screen.Home) { back() }
 
             MaterialTheme(colorScheme = darkColorScheme(primary = Color(0xFFFFB59E), onPrimary = Color(0xFF1A1110))) {
                 when (screen) {
-                    Screen.Widgets -> WidgetGallery(style) { screen = Screen.Home }
-                    Screen.Wallpapers -> WallpaperGallery { screen = Screen.Home }
-                    Screen.Dock -> DockSettingsScreen { screen = Screen.Home }
+                    Screen.Widgets -> WidgetGallery(style, toGlintHome = isHome || direct, onAddedToHome = { finish() }, onBack = back)
+                    Screen.Wallpapers -> WallpaperGallery(onBack = back)
+                    Screen.Dock -> DockSettingsScreen(onBack = back)
                     Screen.Home -> Surface(Modifier.fillMaxSize(), color = Color(0xFF0F1013), contentColor = Color(0xFFE9EAEE)) {
                     Column(
                         Modifier.verticalScroll(rememberScrollState()).systemBarsPadding().padding(20.dp),
@@ -106,7 +109,7 @@ class MainActivity : ComponentActivity() {
                         Section("Make it yours")
                         WidgetRow("Widgets", "${WidgetCatalog.all.size} designs: clocks, weather, calendar, music, steps, notes, checklist…", "Browse") { screen = Screen.Widgets }
                         WidgetRow("Wallpapers", "${Wallpapers.all.size} originals that match the styles", "Browse") { screen = Screen.Wallpapers }
-                        WidgetRow("Dock", "Bedside clock when the phone charges on its side. Alarms only.", "Set up") { screen = Screen.Dock }
+                        WidgetRow("Dock", "Pro · Bedside clock when the phone charges on its side. Alarms only.", "Open") { screen = Screen.Dock }
 
                         Section("Focus mode")
                         Row(verticalAlignment = Alignment.CenterVertically) {

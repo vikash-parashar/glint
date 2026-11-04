@@ -44,8 +44,11 @@ data class WidgetDesign(
 )
 
 object WidgetCatalog {
+    // Every widget design is free. Pro is for extras like Dock mode; the old flags stay
+    // in the list below only as a record and are ignored.
+    @Suppress("UNUSED_PARAMETER")
     private fun d(kind: WidgetKind, id: String, name: String, blurb: String, pro: Boolean = false, needs: Needs = Needs.Nothing) =
-        WidgetDesign(id, kind, name, blurb, pro, needs)
+        WidgetDesign(id, kind, name, blurb, pro = false, needs = needs)
 
     val all: List<WidgetDesign> = listOf(
         // Clock (7)

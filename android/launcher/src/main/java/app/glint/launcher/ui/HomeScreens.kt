@@ -33,6 +33,8 @@ class HomeActions(
     val askCalendar: () -> Unit,
     val askCity: () -> Unit,
     val openSettings: () -> Unit,
+    /** User widgets (and the set-as-home banner), filling the free space on home. */
+    val widgetArea: @Composable (Modifier) -> Unit = {},
 )
 
 private fun dateLine(now: Long, pattern: String) =
@@ -95,7 +97,7 @@ fun BentoHome(home: HomeData, o: Overlays, a: HomeActions) {
                 Text("${home.apps.size} apps", color = s.onBackground.c(), fontWeight = FontWeight.Bold, fontSize = 15.sp)
             }
         }
-        Spacer(Modifier.weight(1f))
+        a.widgetArea(Modifier.weight(1f))
         Dock(home, a)
     }
 }
@@ -146,7 +148,7 @@ fun InkHome(home: HomeData, o: Overlays, a: HomeActions) {
         else if (!o.calendarGranted) InkLine("Show my next event", s, onClick = a.askCalendar)
         home.battery?.let { InkLine("${it.percent}% battery${if (it.charging) ", charging" else ""}", s) {} }
 
-        Spacer(Modifier.weight(1f))
+        a.widgetArea(Modifier.weight(1f))
         home.favorites.take(6).forEach { app ->
             Text(
                 app.label, color = s.onBackground.c(), fontSize = 28.sp, fontWeight = FontWeight.Medium,
@@ -210,7 +212,7 @@ fun LiquidHome(home: HomeData, o: Overlays, a: HomeActions) {
             Text("Start focus", color = s.onBackground.c(), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
             Text(if (home.stats.streakDays > 0) "${home.stats.streakDays}-day streak" else "25 · 50 · 90", color = s.onBackgroundDim.c(), fontSize = 13.sp)
         }
-        Spacer(Modifier.weight(1f))
+        a.widgetArea(Modifier.weight(1f))
         Text("All apps", color = s.onBackground.c(), fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
             modifier = Modifier.align(Alignment.CenterHorizontally).clickable(onClick = a.openDrawer).padding(8.dp))
         Dock(home, a)

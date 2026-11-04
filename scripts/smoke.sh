@@ -20,17 +20,25 @@ shot() {
 }
 open() { adb shell am start -S -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
 
-open $PKG/.MainActivity "" settings
-adb shell input tap $(X 50) $(Y 90) || true; sleep 3; shot settings_tap
-open $PKG/app.glint.launcher.LauncherActivity "" home_bento
-adb shell input swipe $(X 50) $(Y 70) $(X 50) $(Y 15) 400; sleep 3; shot drawer
+# The app icon opens the launcher (Glint is a launcher first).
+adb shell monkey -p $PKG -c android.intent.category.LAUNCHER 1 >/dev/null; sleep 6; shot home_first
+# Add a few widgets the way the in-app gallery does.
+for d in clock_big analog_classic battery_ring date_month weather_now; do
+  adb shell am start -W -a app.glint.action.ADD_WIDGET --es design $d -p $PKG >/dev/null; sleep 4
+  adb shell input keyevent KEYCODE_BACK; sleep 1
+done
+open $PKG/app.glint.launcher.LauncherActivity "" home_widgets
+adb shell input swipe $(X 50) $(Y 75) $(X 50) $(Y 15) 400; sleep 3; shot drawer
+adb shell input keyevent KEYCODE_BACK; sleep 1
+# Long-press empty home for the menu.
+adb shell input swipe $(X 50) $(Y 92) $(X 50) $(Y 92) 1200; sleep 3; shot home_menu
 adb shell input keyevent KEYCODE_BACK; sleep 1
 adb shell input keyevent KEYCODE_HOME; sleep 2
+# Dock without Pro shows the paywall.
 adb shell settings put system accelerometer_rotation 1
-open $PKG/app.glint.dock.DockActivity "" dock
-adb shell input tap $(Y 50) $(X 50); sleep 3; shot dock_page2
-adb shell input tap $(Y 50) $(X 50); sleep 3; shot dock_page3
+open $PKG/app.glint.dock.DockActivity "" dock_locked
 adb shell input keyevent KEYCODE_BACK; sleep 2
+open $PKG/.MainActivity "" settings
 
 open $PKG/.MainActivity "--es screen Widgets" gallery_widgets
 open $PKG/.MainActivity "--es screen Wallpapers" gallery_wallpapers

@@ -50,6 +50,9 @@ data class Overlays(
     val city: String? = null,
     val nextEvent: NextEvent? = null,
     val calendarGranted: Boolean = false,
+    val menuOpen: Boolean = false,
+    val editingWidgets: Boolean = false,
+    val isDefaultHome: Boolean = true,
 )
 
 class LauncherViewModel(app: Application) : AndroidViewModel(app) {
@@ -74,6 +77,12 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     val home: StateFlow<HomeData> = combine(homeCore, focus.repo.history, focus.repo.defaultAllowed) { h, hist, allowed ->
         h.copy(stats = FocusStatsCalculator.compute(hist, System.currentTimeMillis()), defaultAllowed = allowed)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeData())
+
+    /** Widgets the user placed on the Glint home. */
+    val widgetIds: StateFlow<List<Int>> = prefs.widgets.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    suspend fun addWidget(id: Int) = prefs.addWidget(id)
+    fun removeWidget(id: Int) = viewModelScope.launch { prefs.removeWidget(id) }
+    fun moveWidget(id: Int, up: Boolean) = viewModelScope.launch { prefs.moveWidget(id, up) }
 
     private val _overlays = MutableStateFlow(Overlays())
     val overlays: StateFlow<Overlays> = _overlays.asStateFlow()
@@ -121,7 +130,10 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
         _overlays.update { it.copy(summary = done) }
     }
 
-    fun setStyle(kind: StyleKind) = viewModelScope.launch { styles.set(kind) }
+    fun setStyle(kind: StyleKind) = viewModelScope.launch {
+        styles.set(kind)
+        app.glint.widgets.engine.GlintWidget.refreshAll(getApplication())
+    }
     fun setCity(city: String) = viewModelScope.launch { cityStore.set(city) }
 
     fun toggleFavorite(pkg: String) = viewModelScope.launch {
@@ -132,6 +144,10 @@ class LauncherViewModel(app: Application) : AndroidViewModel(app) {
     fun onCalendarPermissionResult() = viewModelScope.launch {
         _overlays.update { it.copy(calendarGranted = agenda.hasPermission(), nextEvent = agenda.next()) }
     }
+
+    fun openMenu(open: Boolean) = _overlays.update { it.copy(menuOpen = open) }
+    fun editWidgets(on: Boolean) = _overlays.update { it.copy(editingWidgets = on, menuOpen = false) }
+    fun setDefaultHome(isHome: Boolean) = _overlays.update { it.copy(isDefaultHome = isHome) }
 
     fun openDrawer(open: Boolean) = _overlays.update { it.copy(drawerOpen = open) }
     fun openFocusSetup(open: Boolean) = _overlays.update { it.copy(focusSetupOpen = open) }

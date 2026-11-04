@@ -20,10 +20,20 @@
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
             android:excludeFromRecents="true"
-            android:clearTaskOnLaunch="true"
             android:resumeWhilePausing="true"
             android:theme="@android:style/Theme.Material.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:label="Glint">
+            <!-- The app icon opens Glint home. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- The widget gallery adds widgets here. -->
+            <intent-filter>
+                <action android:name="app.glint.action.ADD_WIDGET" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />

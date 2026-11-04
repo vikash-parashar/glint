@@ -27,6 +27,7 @@ class DockActivity : ComponentActivity() {
     private lateinit var settings: DockSettings
     private lateinit var dnd: DndController
     private var tilt: TiltWatcher? = null
+    private var locked = false
 
     private val power = object : BroadcastReceiver() {
         override fun onReceive(c: Context, i: Intent) {
@@ -44,6 +45,15 @@ class DockActivity : ComponentActivity() {
         WindowInsetsControllerCompat(window, window.decorView).apply {
             hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+        val pro = app.glint.data.ProStore(this)
+        if (!pro.isPro) {
+            // Not unlocked: show what Dock is and how to get it, nothing else runs.
+            requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            locked = true
+            setContent { ProGate(pro, onUnlocked = { recreate() }, onClose = { finish() }) }
+            return
         }
         if (settings.alarmsOnly) dnd.enableAlarmsOnly()
         registerReceiver(power, IntentFilter(Intent.ACTION_POWER_DISCONNECTED))
@@ -81,12 +91,14 @@ class DockActivity : ComponentActivity() {
 
     override fun onStop() {
         super.onStop()
+        if (locked) return
         // Screen turned off at night: keep Dock (and silence) alive. Went to another app: leave Dock.
         val screenOn = getSystemService(PowerManager::class.java).isInteractive
         if (screenOn && !isChangingConfigurations) finish()
     }
 
     override fun onDestroy() {
+        if (locked) { super.onDestroy(); return }
         runCatching { unregisterReceiver(power) }
         if (!isChangingConfigurations) {
             dnd.restoreAfterDock()
