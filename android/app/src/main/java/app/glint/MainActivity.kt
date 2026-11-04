@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 onPauseOrDispose { }
             }
 
-            var screen by remember { mutableStateOf(Screen.Home) }
+            var screen by remember { mutableStateOf(runCatching { Screen.valueOf(intent.getStringExtra("screen") ?: "Home") }.getOrDefault(Screen.Home)) }
             BackHandler(enabled = screen != Screen.Home) { screen = Screen.Home }
 
             MaterialTheme(colorScheme = darkColorScheme(primary = Color(0xFFFFB59E), onPrimary = Color(0xFF1A1110))) {

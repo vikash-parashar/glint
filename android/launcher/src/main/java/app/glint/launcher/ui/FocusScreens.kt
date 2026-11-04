@@ -164,7 +164,7 @@ private fun AppPicker(apps: List<AppEntry>, selected: Set<String>, onChange: (Se
     var query by remember { mutableStateOf("") }
     OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("Search apps") }, singleLine = true)
     LazyColumn(Modifier.heightIn(max = 380.dp)) {
-        items(apps.filter { it.label.contains(query, ignoreCase = true) }, key = { it.packageName }) { app ->
+        items(apps.filter { it.label.contains(query, ignoreCase = true) }, key = { it.key }) { app ->
             Row(
                 Modifier.fillMaxWidth().clickable {
                     onChange(if (app.packageName in selected) selected - app.packageName else selected + app.packageName)

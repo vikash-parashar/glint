@@ -13,7 +13,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-data class AppEntry(val label: String, val packageName: String, val icon: Bitmap, val launch: Intent)
+data class AppEntry(val label: String, val packageName: String, val icon: Bitmap, val launch: Intent) {
+    /** Unique per launcher entry: one package can have several (e.g. Google app and its Assistant). */
+    val key: String get() = launch.component?.flattenToShortString() ?: packageName
+}
 
 class AppRepository(private val context: Context) {
     private val launcherApps = context.getSystemService(LauncherApps::class.java)

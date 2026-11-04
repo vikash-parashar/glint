@@ -56,7 +56,7 @@ fun AppDrawer(home: HomeData, onLaunch: (AppEntry) -> Unit, onLongPress: (AppEnt
         Spacer(Modifier.height(16.dp))
         if (s.kind == StyleKind.Ink) {
             androidx.compose.foundation.lazy.LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                items(results.size, key = { results[it].packageName }) { i ->
+                items(results.size, key = { results[it].key }) { i ->
                     val app = results[i]
                     Text(app.label, color = s.onBackground.c(), fontSize = 22.sp,
                         modifier = Modifier.fillMaxWidth()
@@ -66,7 +66,7 @@ fun AppDrawer(home: HomeData, onLaunch: (AppEntry) -> Unit, onLongPress: (AppEnt
             }
         } else {
             LazyVerticalGrid(GridCells.Fixed(4), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                items(results, key = { it.packageName }) { app ->
+                items(results, key = { it.key }) { app ->
                     AppIcon(app, s, 50.dp, onClick = { onLaunch(app) }, onLongClick = { onLongPress(app) })
                 }
             }
