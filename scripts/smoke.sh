@@ -15,8 +15,8 @@ X() { echo $(( W * $1 / 100 )); }
 Y() { echo $(( H * $1 / 100 )); }
 shot() {
   adb exec-out screencap -p > "/tmp/$1.png"
-  convert "/tmp/$1.png" -resize 480x -quality 80 "/tmp/$1.jpg" 2>/dev/null || cp "/tmp/$1.png" "/tmp/$1.jpg"
-  echo "SHOT-BEGIN $1"; base64 -w0 "/tmp/$1.jpg"; echo; echo "SHOT-END $1"
+  ffmpeg -loglevel error -y -i "/tmp/$1.png" -vf scale=400:-1 -q:v 6 "/tmp/$1.jpg" || return 0
+  echo "SHOT-BEGIN $1"; base64 -w 3000 "/tmp/$1.jpg"; echo "SHOT-END $1"
 }
 open() { adb shell am start -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
 
