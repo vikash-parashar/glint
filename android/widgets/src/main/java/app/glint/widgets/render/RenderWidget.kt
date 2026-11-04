@@ -112,9 +112,8 @@ private fun DigitalClock(d: WidgetData, ink: WidgetInk) {
     val baseFont = if (serif) ClockFont.Serif else ClockFont.Light
     when (d.design.id) {
         "clock_stacked" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            // Two lines must fit the height: each line gets a bit over a quarter of it.
-            LiveClock(ClockFont.Bold, "hh", "HH", (h * .27f).coerceIn(20f, 64f), ink.fg)
-            LiveClock(ClockFont.Bold, "mm", "mm", (h * .27f).coerceIn(20f, 64f), ink.accent)
+            // One TextClock with a line break: hours over minutes. Two lines must fit the height.
+            LiveClock(ClockFont.Stacked, "hh\nmm", "HH\nmm", (h * .30f).coerceIn(20f, 64f), ink.fg)
         }
         "clock_mono" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             LiveClock(ClockFont.Mono, "HH:mm", "HH:mm", big * .9f, ink.fg)

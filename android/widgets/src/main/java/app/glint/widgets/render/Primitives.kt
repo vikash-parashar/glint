@@ -37,6 +37,8 @@ fun Label(text: String, color: Color) = Txt(text.uppercase(), 10f, color, FontWe
 enum class ClockFont(val layout: Int) {
     Light(R.layout.rv_clock_light), Bold(R.layout.rv_clock_bold), Mono(R.layout.rv_clock_mono),
     Serif(R.layout.rv_clock_serif), Medium(R.layout.rv_clock_medium),
+    /** Two lines (hours over minutes) in one TextClock. */
+    Stacked(R.layout.rv_clock_stacked),
 }
 
 /**
