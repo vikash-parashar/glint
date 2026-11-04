@@ -6,6 +6,7 @@ import android.util.SizeF
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,6 +57,7 @@ fun HomeWidgets(
     onDoneEditing: () -> Unit,
     onAdd: () -> Unit,
     modifier: Modifier = Modifier,
+    scroll: ScrollState = rememberScrollState(),
 ) {
     val ctx = LocalContext.current
     val kinds = remember(ids) { ids.associateWith { GlintWidget.kindOf(ctx, it) } }
@@ -87,7 +89,7 @@ fun HomeWidgets(
         }
         pendingHalf?.let { rows += listOf(it) }
 
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(gap)) {
+        Column(Modifier.fillMaxSize().verticalScroll(scroll), verticalArrangement = Arrangement.spacedBy(gap)) {
             if (editing) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = onAdd) { Text("+ Add widget", color = style.onBackground.c()) }

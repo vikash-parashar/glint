@@ -28,10 +28,13 @@ for d in clock_big analog_classic battery_ring date_month weather_now; do
   adb shell input keyevent KEYCODE_BACK; sleep 1
 done
 open $PKG/app.glint.launcher.LauncherActivity "" home_widgets
+# First swipe scrolls the widgets to the end, the next opens all apps.
+adb shell input swipe $(X 50) $(Y 75) $(X 50) $(Y 15) 400; sleep 2; shot home_scrolled
 adb shell input swipe $(X 50) $(Y 75) $(X 50) $(Y 15) 400; sleep 3; shot drawer
-adb shell input keyevent KEYCODE_BACK; sleep 1
-# Long-press empty home for the menu.
-adb shell input swipe $(X 50) $(Y 92) $(X 50) $(Y 92) 1200; sleep 3; shot home_menu
+adb shell input keyevent KEYCODE_BACK; sleep 2
+# Back on home stays in Glint; long-press empty home for the menu.
+adb shell input keyevent KEYCODE_BACK; sleep 2
+adb shell input swipe $(X 75) $(Y 28) $(X 75) $(Y 28) 1200; sleep 3; shot home_menu
 adb shell input keyevent KEYCODE_BACK; sleep 1
 adb shell input keyevent KEYCODE_HOME; sleep 2
 # Dock without Pro shows the paywall.

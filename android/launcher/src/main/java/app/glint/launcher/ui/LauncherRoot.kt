@@ -6,7 +6,11 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.input.pointer.PointerEventPass
+import kotlin.math.abs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +46,7 @@ fun LauncherRoot(
     onSetHome: () -> Unit,
 ) {
     var askCity by remember { mutableStateOf(false) }
+    val widgetScroll = rememberScrollState()
     val session = home.session
     val actions = HomeActions(
         launch = onLaunch,
@@ -55,6 +60,7 @@ fun LauncherRoot(
             Column(mod, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (!overlays.isDefaultHome) SetHomeBanner(home.style, onSetHome)
                 HomeWidgets(
+                    scroll = widgetScroll,
                     ids = widgetIds, host = host, style = home.style, editing = overlays.editingWidgets,
                     onRemove = { vm.removeWidget(it); host.host.deleteAppWidgetId(it) },
                     onMove = { id, up -> vm.moveWidget(id, up) },
@@ -66,6 +72,8 @@ fun LauncherRoot(
         },
     )
 
+    // Back on home never leaves the launcher.
+    BackHandler(true) { vm.openMenu(false) }
     BackHandler(overlays.drawerOpen) { vm.openDrawer(false) }
     BackHandler(overlays.editingWidgets) { vm.editWidgets(false) }
 
@@ -73,13 +81,21 @@ fun LauncherRoot(
         StyleBackground(home.style, muted = session != null) {
             Box(
                 Modifier.fillMaxSize().pointerInput(session == null) {
-                    if (session == null) {
-                        // Swipe up anywhere on home opens all apps.
-                        var total = 0f
-                        detectVerticalDragGestures(
-                            onDragStart = { total = 0f },
-                            onDragEnd = { if (total < -120f) vm.openDrawer(true) },
-                        ) { _, drag -> total += drag }
+                    if (session != null) return@pointerInput
+                    // Swipe up anywhere on home opens all apps. Watched before the widgets see
+                    // the touch, so it works over widgets too, once their list is scrolled to the end.
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                        val atEnd = !widgetScroll.canScrollForward
+                        var dx = 0f; var dy = 0f
+                        while (true) {
+                            val ev = awaitPointerEvent(PointerEventPass.Initial)
+                            val c = ev.changes.firstOrNull { it.id == down.id } ?: break
+                            if (!c.pressed) break
+                            dx += c.position.x - c.previousPosition.x
+                            dy += c.position.y - c.previousPosition.y
+                        }
+                        if (atEnd && dy < -150f && abs(dy) > abs(dx) * 1.5f) vm.openDrawer(true)
                     }
                 },
             ) {
