@@ -15,9 +15,10 @@ abstract class GlintReceiver : GlanceAppWidgetReceiver() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         super.onDeleted(context, appWidgetIds)
-        val pending = goAsync()
+        // Glance's own onDeleted already holds goAsync(), so ours can be null here.
+        val pending: PendingResult? = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-            try { appWidgetIds.forEach { WidgetConfigStore(context).remove(it) } } finally { pending.finish() }
+            try { appWidgetIds.forEach { WidgetConfigStore(context).remove(it) } } finally { pending?.finish() }
         }
     }
 }
