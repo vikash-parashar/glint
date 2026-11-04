@@ -83,10 +83,10 @@ fun LauncherRoot(
                 Modifier.fillMaxSize().pointerInput(session == null) {
                     if (session != null) return@pointerInput
                     // Swipe up anywhere on home opens all apps. Watched before the widgets see
-                    // the touch, so it works over widgets too, once their list is scrolled to the end.
+                    // the touch: works from the dock area, and over widgets once their list is at the end.
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-                        val atEnd = !widgetScroll.canScrollForward
+                        val atEnd = !widgetScroll.canScrollForward || down.position.y > size.height * 0.8f
                         var dx = 0f; var dy = 0f
                         while (true) {
                             val ev = awaitPointerEvent(PointerEventPass.Initial)
