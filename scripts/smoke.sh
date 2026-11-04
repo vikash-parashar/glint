@@ -4,6 +4,11 @@ set -u
 PKG=app.glint
 adb install -r -g glint.apk || exit 1
 adb logcat -c
+# Emulator screens are small; work in fractions of the real size.
+read W H < <(adb shell wm size | tail -1 | sed 's/.*: //; s/x/ /')
+echo "screen ${W}x${H}"
+X() { echo $(( W * $1 / 100 )); }
+Y() { echo $(( H * $1 / 100 )); }
 shot() {
   adb exec-out screencap -p > "/tmp/$1.png"
   convert "/tmp/$1.png" -resize 360x "/tmp/$1.jpg" 2>/dev/null || cp "/tmp/$1.png" "/tmp/$1.jpg"
@@ -12,15 +17,15 @@ shot() {
 open() { adb shell am start -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
 
 open $PKG/.MainActivity "" settings
-adb shell input tap 540 1300 || true; sleep 3; shot settings_tap
+adb shell input tap $(X 50) $(Y 90) || true; sleep 3; shot settings_tap
 open $PKG/app.glint.launcher.LauncherActivity "" home_bento
-adb shell input swipe 540 1500 540 300 400; sleep 3; shot drawer
+adb shell input swipe $(X 50) $(Y 70) $(X 50) $(Y 15) 400; sleep 3; shot drawer
 adb shell input keyevent KEYCODE_BACK; sleep 1
 adb shell input keyevent KEYCODE_HOME; sleep 2
 adb shell settings put system accelerometer_rotation 1
 open $PKG/app.glint.dock.DockActivity "" dock
-adb shell input tap 1200 540; sleep 3; shot dock_page2
-adb shell input tap 1200 540; sleep 3; shot dock_page3
+adb shell input tap $(Y 50) $(X 50); sleep 3; shot dock_page2
+adb shell input tap $(Y 50) $(X 50); sleep 3; shot dock_page3
 adb shell input keyevent KEYCODE_BACK; sleep 2
 
 echo "==== crashes ===="
