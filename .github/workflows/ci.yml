@@ -40,6 +40,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: glint-debug-apk
+      - name: Image tools for screenshots
+        run: pip3 install --quiet pillow
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

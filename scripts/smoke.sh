@@ -15,7 +15,7 @@ X() { echo $(( W * $1 / 100 )); }
 Y() { echo $(( H * $1 / 100 )); }
 shot() {
   adb exec-out screencap -p > "/tmp/$1.png"
-  ffmpeg -loglevel error -y -i "/tmp/$1.png" -vf scale=400:-1 -q:v 6 "/tmp/$1.jpg" || return 0
+  python3 -c "from PIL import Image; i=Image.open('/tmp/$1.png').convert('RGB'); i.thumbnail((420,900)); i.save('/tmp/$1.jpg', quality=72)" || return 0
   echo "SHOT-BEGIN $1"; base64 -w 3000 "/tmp/$1.jpg"; echo "SHOT-END $1"
 }
 open() { adb shell am start -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
