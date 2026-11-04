@@ -18,7 +18,7 @@ shot() {
   python3 -c "from PIL import Image; i=Image.open('/tmp/$1.png').convert('RGB'); i.thumbnail((420,900)); i.save('/tmp/$1.jpg', quality=72)" || return 0
   echo "SHOT-BEGIN $1"; base64 -w 3000 "/tmp/$1.jpg"; echo "SHOT-END $1"
 }
-open() { adb shell am start -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
+open() { adb shell am start -S -W -n "$1" ${2:-} >/dev/null; sleep 6; shot "$3"; }
 
 open $PKG/.MainActivity "" settings
 adb shell input tap $(X 50) $(Y 90) || true; sleep 3; shot settings_tap
@@ -37,9 +37,21 @@ open $PKG/.MainActivity "--es screen Wallpapers" gallery_wallpapers
 open $PKG/.MainActivity "--es screen Dock" dock_settings
 for p in 0 1 2 3 4 5 6; do
   adb shell am start -W -n $PKG/app.glint.debug.WidgetTestActivity --ei page $p >/dev/null; sleep 12; shot widgets_$p
+  adb shell input swipe $(X 50) $(Y 85) $(X 50) $(Y 10) 600; sleep 3; shot widgets_${p}b
   adb shell input keyevent KEYCODE_BACK; sleep 1
 done
 
+# Same widgets and home in the Ink and Liquid styles (tap the style cards in settings).
+for st in "Ink 49" "Liquid 80"; do
+  set -- $st
+  adb shell am start -S -W -n $PKG/.MainActivity >/dev/null; sleep 4
+  adb shell input tap $(X $2) $(Y 51); sleep 4
+  adb shell am start -W -n $PKG/app.glint.debug.WidgetTestActivity --ei page 0 >/dev/null; sleep 10; shot style_$1_w0
+  adb shell input keyevent KEYCODE_BACK; sleep 1
+  adb shell am start -W -n $PKG/app.glint.debug.WidgetTestActivity --ei page 4 >/dev/null; sleep 10; shot style_$1_w4
+  adb shell input keyevent KEYCODE_BACK; sleep 1
+  open $PKG/app.glint.launcher.LauncherActivity "" style_$1_home
+done
 echo "==== crashes ===="
 if adb logcat -d -b crash | grep -E "FATAL EXCEPTION|AndroidRuntime" -A 30; then
   echo "SMOKE: CRASH FOUND"; exit 1

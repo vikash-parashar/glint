@@ -112,8 +112,9 @@ private fun DigitalClock(d: WidgetData, ink: WidgetInk) {
     val baseFont = if (serif) ClockFont.Serif else ClockFont.Light
     when (d.design.id) {
         "clock_stacked" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            LiveClock(ClockFont.Bold, "hh", "HH", (h * .36f).coerceIn(24f, 72f), ink.fg)
-            LiveClock(ClockFont.Bold, "mm", "mm", (h * .36f).coerceIn(24f, 72f), ink.accent)
+            // Two lines must fit the height: each line gets a bit over a quarter of it.
+            LiveClock(ClockFont.Bold, "hh", "HH", (h * .27f).coerceIn(20f, 64f), ink.fg)
+            LiveClock(ClockFont.Bold, "mm", "mm", (h * .27f).coerceIn(20f, 64f), ink.accent)
         }
         "clock_mono" -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             LiveClock(ClockFont.Mono, "HH:mm", "HH:mm", big * .9f, ink.fg)
@@ -206,7 +207,7 @@ private fun DateWidget(d: WidgetData, ink: WidgetInk) {
         }
         "date_page" -> Column(GlanceModifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalAlignment = Alignment.CenterVertically) {
             Txt(t.format(DateTimeFormatter.ofPattern("MMMM")).uppercase(), 12f, ink.accent, FontWeight.Bold)
-            Txt(t.dayOfMonth.toString(), (LocalSize.current.height.value * .45f).coerceIn(32f, 90f), ink.fg, FontWeight.Bold, FontFamily.Serif)
+            Txt(t.dayOfMonth.toString(), (LocalSize.current.height.value * .32f).coerceIn(28f, 80f), ink.fg, FontWeight.Bold, FontFamily.Serif)
             Txt(t.dayOfWeek.getDisplayName(JTextStyle.FULL, Locale.getDefault()), 13f, ink.dim)
         }
         else -> Row(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) { // date_big
@@ -380,7 +381,8 @@ private fun BatteryWidget(d: WidgetData, ink: WidgetInk) {
         }
         else -> Column(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.Bottom) { // battery_percent
             Label(status, ink.dim)
-            Txt("$pct%", (LocalSize.current.height.value * .42f).coerceIn(28f, 72f), ink.fg, FontWeight.Bold)
+            val sz = minOf(LocalSize.current.height.value * .42f, LocalSize.current.width.value * .26f)
+            Txt("$pct%", sz.coerceIn(22f, 72f), ink.fg, FontWeight.Bold, maxLines = 1)
         }
     }
 }
@@ -617,7 +619,7 @@ private fun PhotoWidget(d: WidgetData, ink: WidgetInk) {
     if (photo == null) {
         StyleSurface(ctx, d.style, d.design.kind.ordinal) {
             Box(GlanceModifier.fillMaxSize().clickable(actionStartActivity(configIntent(ctx, d.appWidgetId))), contentAlignment = Alignment.Center) {
-                Txt("Tap to pick a photo", 14f, ink.fg, FontWeight.Bold)
+                Txt("Tap to add a photo", 14f, ink.fg, FontWeight.Bold, maxLines = 2)
             }
         }
         return
@@ -691,11 +693,11 @@ private fun SkyWidget(d: WidgetData, ink: WidgetInk) {
         val phase = Astronomy.moonPhase(d.now)
         val density = LocalContext.current.resources.displayMetrics.density
         Row(GlanceModifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            Img(Bitmaps.moon((56 * density).toInt(), phase, ink.fg.toArgb(), ink.track.toArgb()), GlanceModifier.size(56.dp))
-            Spacer(GlanceModifier.width(12.dp))
+            Img(Bitmaps.moon((44 * density).toInt(), phase, ink.fg.toArgb(), ink.track.toArgb()), GlanceModifier.size(44.dp))
+            Spacer(GlanceModifier.width(10.dp))
             Column {
                 Label("Tonight", ink.dim)
-                Txt(Astronomy.moonName(phase), 15f, ink.fg, FontWeight.Bold, maxLines = 2)
+                Txt(Astronomy.moonName(phase), 13f, ink.fg, FontWeight.Bold, maxLines = 2)
                 Txt("${(((1 - kotlin.math.cos(phase * 2 * Math.PI)) / 2) * 100).toInt()}% lit", 12f, ink.dim)
             }
         }
